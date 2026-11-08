@@ -1,0 +1,306 @@
+<!-- BEHAVIOR ANALYTICS CONTENT (Rendered inside AdminLayout) -->
+<div class="space-y-8 animate-fade-in">
+    <!-- Header & Period Filter -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-2.5">
+                <h2 class="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                    Phân Tích Hành Vi & Gợi Ý
+                </h2>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-orange-100 text-orange-700 border border-orange-200">
+                    Behavioral AI
+                </span>
+            </div>
+            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 font-medium">
+                Dữ liệu thời gian thực về hành vi duyệt web, phễu chuyển đổi và hiệu quả các khối gợi ý cá nhân hóa.
+            </p>
+        </div>
+
+        <!-- Period Toggle Buttons -->
+        <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl self-start sm:self-auto">
+            <a 
+                href="/admin/behavior-analytics?days=7" 
+                class="px-4 py-1.5 rounded-xl text-xs font-bold transition-all <%= days === 7 ? 'bg-purple-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-300 hover:text-purple-600' %>"
+            >
+                7 Ngày Qua
+            </a>
+            <a 
+                href="/admin/behavior-analytics?days=30" 
+                class="px-4 py-1.5 rounded-xl text-xs font-bold transition-all <%= days === 30 ? 'bg-purple-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-300 hover:text-purple-600' %>"
+            >
+                30 Ngày Qua
+            </a>
+        </div>
+    </div>
+
+    <!-- 1. KPI Top Summary Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Card 1: Views -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Lượt xem sản phẩm</span>
+                <div class="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center font-bold">
+                    <i class="fas fa-eye"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-slate-800 dark:text-white">
+                <%= (funnel.views || 0).toLocaleString('vi-VN') %>
+            </h3>
+            <span class="text-[11px] font-semibold text-slate-400 mt-1 inline-block">Sự kiện product_view</span>
+        </div>
+
+        <!-- Card 2: Cart Adds -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Thêm vào giỏ</span>
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-900/30 text-amber-600 flex items-center justify-center font-bold">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-slate-800 dark:text-white">
+                <%= (funnel.cartAdds || 0).toLocaleString('vi-VN') %>
+            </h3>
+            <span class="text-[11px] font-semibold text-slate-400 mt-1 inline-block">Sự kiện cart_add</span>
+        </div>
+
+        <!-- Card 3: Purchases -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Đơn đặt hàng</span>
+                <div class="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 flex items-center justify-center font-bold">
+                    <i class="fas fa-box-check"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-slate-800 dark:text-white">
+                <%= (funnel.purchases || 0).toLocaleString('vi-VN') %>
+            </h3>
+            <span class="text-[11px] font-semibold text-slate-400 mt-1 inline-block">Ghi nhận phía Server</span>
+        </div>
+
+        <!-- Card 4: Funnel CR -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Tỉ lệ chuyển đổi chung</span>
+                <div class="w-10 h-10 rounded-2xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center font-bold">
+                    <i class="fas fa-percentage"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-purple-600">
+                <%= funnel.overallCr %>%
+            </h3>
+            <span class="text-[11px] font-semibold text-slate-400 mt-1 inline-block">Xem → Mua thành công</span>
+        </div>
+    </div>
+
+    <!-- 2. Conversion Funnel Visualizer -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-800">
+        <h3 class="text-base font-extrabold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+            <span>🔻</span> Phễu Chuyển Đổi Người Dùng (Xem → Giỏ Hàng → Mua Hàng)
+        </h3>
+        <p class="text-xs text-slate-400 mb-6">Đo lường mức độ rơi rụng qua từng chặng trong hành trình mua sắm.</p>
+
+        <div class="space-y-5">
+            <!-- Stage 1: Views -->
+            <div>
+                <div class="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <span>1. Lượt xem sản phẩm (Product View)</span>
+                    <span><%= (funnel.views || 0).toLocaleString() %> (100%)</span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-800 h-6 rounded-xl overflow-hidden p-0.5">
+                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-lg" style="width: 100%"></div>
+                </div>
+            </div>
+
+            <!-- Stage 2: Cart Adds -->
+            <div>
+                <div class="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <span>2. Thêm vào giỏ (Cart Add)</span>
+                    <span>
+                        <%= (funnel.cartAdds || 0).toLocaleString() %> 
+                        <span class="text-amber-600 font-semibold">(<%= funnel.viewToCartCr %>% từ lượt xem)</span>
+                    </span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-800 h-6 rounded-xl overflow-hidden p-0.5">
+                    <div class="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-lg" style="width: <%= Math.min(100, Math.max(5, funnel.viewToCartCr)) %>%"></div>
+                </div>
+            </div>
+
+            <!-- Stage 3: Purchases -->
+            <div>
+                <div class="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <span>3. Mua hàng thành công (Purchase)</span>
+                    <span>
+                        <%= (funnel.purchases || 0).toLocaleString() %> 
+                        <span class="text-emerald-600 font-semibold">(<%= funnel.cartToPurchaseCr %>% từ giỏ hàng)</span>
+                    </span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-800 h-6 rounded-xl overflow-hidden p-0.5">
+                    <div class="bg-gradient-to-r from-emerald-500 to-teal-600 h-full rounded-lg" style="width: <%= Math.min(100, Math.max(3, funnel.overallCr)) %>%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Recommendation Blocks Performance (CTR & Conversion) -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-800">
+        <h3 class="text-base font-extrabold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+            <span>🎯</span> Hiệu Quả & CTR Từng Khối Gợi Ý
+        </h3>
+        <p class="text-xs text-slate-400 mb-6">Đo lường tỷ lệ nhấp (Click-Through Rate) của các khối gợi ý cá nhân hóa.</p>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 dark:bg-slate-800 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
+                    <tr>
+                        <th class="py-3 px-5">Khối Gợi Ý</th>
+                        <th class="py-3 px-5 text-center">Hiển thị (Impressions)</th>
+                        <th class="py-3 px-5 text-center">Lượt nhấp (Clicks)</th>
+                        <th class="py-3 px-5 text-center">Tỷ lệ Click (CTR)</th>
+                        <th class="py-3 px-5 text-right">Đánh giá</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+                    <% recoBlocks.forEach(block => { %>
+                        <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/50 transition-colors">
+                            <td class="py-3.5 px-5 font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <span><%= block.icon %></span>
+                                <div>
+                                    <p><%= block.name %></p>
+                                    <span class="text-[10px] text-slate-400"><%= block.code %></span>
+                                </div>
+                            </td>
+                            <td class="py-3.5 px-5 text-center text-slate-700 dark:text-slate-300 font-bold">
+                                <%= block.impressions.toLocaleString() %>
+                            </td>
+                            <td class="py-3.5 px-5 text-center text-slate-700 dark:text-slate-300 font-bold">
+                                <%= block.clicks.toLocaleString() %>
+                            </td>
+                            <td class="py-3.5 px-5 text-center">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-black <%= block.ctr >= 5 ? 'bg-emerald-100 text-emerald-700' : (block.ctr > 0 ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-400') %>">
+                                    <%= block.ctr %>%
+                                </span>
+                            </td>
+                            <td class="py-3.5 px-5 text-right">
+                                <% if (block.ctr >= 7) { %>
+                                    <span class="text-emerald-600 font-bold text-[11px]">Rất hiệu quả 🔥</span>
+                                <% } else if (block.ctr >= 3) { %>
+                                    <span class="text-blue-600 font-bold text-[11px]">Tốt 👍</span>
+                                <% } else { %>
+                                    <span class="text-slate-400 text-[11px]">Ổn định</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 4. Top Viewed Products & Categories Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Top Viewed Products -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <h3 class="text-base font-extrabold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+                <span>🔥</span> Top Sản Phẩm Xem Nhiều Nhất
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">Các tin đăng thu hút nhiều lượt xem nhất trong <%= days %> ngày qua.</p>
+
+            <div class="space-y-3">
+                <% if (topProducts.length === 0) { %>
+                    <p class="text-xs text-slate-400 py-6 text-center">Chưa có dữ liệu lượt xem</p>
+                <% } else { %>
+                    <% topProducts.forEach((prod, idx) => { %>
+                        <div class="flex items-center justify-between p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 text-xs font-bold flex items-center justify-center shrink-0">
+                                    <%= idx + 1 %>
+                                </span>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate max-w-[200px]">
+                                        <%= prod.title || prod.name || 'Sản phẩm' %>
+                                    </p>
+                                    <span class="text-[10px] text-slate-400"><%= prod.category %> • <%= Number(prod.price || 0).toLocaleString('vi-VN') %>đ</span>
+                                </div>
+                            </div>
+                            <span class="text-xs font-black text-purple-600 px-2.5 py-1 bg-purple-50 rounded-full shrink-0">
+                                <%= prod.viewCount.toLocaleString() %> lượt xem
+                            </span>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Category Preferences Distribution -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <h3 class="text-base font-extrabold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+                <span>🏷️</span> Phân Bố Sở Thích Theo Danh Mục
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">Mức độ tương tác của người dùng trên từng ngành hàng.</p>
+
+            <div class="space-y-3.5">
+                <% if (categoryStats.length === 0) { %>
+                    <p class="text-xs text-slate-400 py-6 text-center">Chưa có dữ liệu danh mục</p>
+                <% } else { %>
+                    <% categoryStats.forEach(cat => { %>
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                                <span><%= cat.category %></span>
+                                <span><%= cat.count.toLocaleString() %> tương tác (<%= cat.percent %>%)</span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                                <div class="bg-purple-600 h-full rounded-full" style="width: <%= cat.percent %>%"></div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Search Keywords (Popular & Zero-Results) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Top Search Queries -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <h3 class="text-base font-extrabold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+                <span>🔎</span> Từ Khóa Tìm Kiếm Phổ Biến
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">Nhu cầu tìm kiếm nổi bật của người dùng trên sàn.</p>
+
+            <div class="flex flex-wrap gap-2">
+                <% if (topSearches.length === 0) { %>
+                    <p class="text-xs text-slate-400 py-4">Chưa có lịch sử tìm kiếm</p>
+                <% } else { %>
+                    <% topSearches.forEach(item => { %>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
+                            <span>#</span> <%= item.query %>
+                            <span class="px-1.5 py-0.5 rounded-md bg-purple-100 text-purple-700 text-[10px] font-black"><%= item.count %></span>
+                        </span>
+                    <% }) %>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Zero-Result Searches -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <h3 class="text-base font-extrabold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+                <span>⚠️</span> Từ Khóa Không Có Kết Quả
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">Gợi ý nguồn hàng còn thiếu hụt để người bán bổ sung.</p>
+
+            <div class="flex flex-wrap gap-2">
+                <% if (zeroResultSearches.length === 0) { %>
+                    <p class="text-xs text-emerald-600 font-medium py-4">Tuyệt vời! Không có từ khóa nào bị thiếu hụt kết quả.</p>
+                <% } else { %>
+                    <% zeroResultSearches.forEach(item => { %>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 text-xs font-bold text-rose-700 border border-rose-200/60">
+                            <span>•</span> <%= item.query %>
+                            <span class="px-1.5 py-0.5 rounded-md bg-rose-200 text-rose-800 text-[10px]"><%= item.count %> lần</span>
+                        </span>
+                    <% }) %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+

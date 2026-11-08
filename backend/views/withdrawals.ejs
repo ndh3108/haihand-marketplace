@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Duyệt Giải Ngân - HaiHand Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 flex min-h-screen">
+    
+    <%- include('partials/sidebar', {active: 'withdrawals'}) %>
+
+    <div class="flex-1 p-10 h-screen overflow-y-auto ml-64">
+        <h2 class="text-3xl font-black text-slate-800 mb-8 tracking-tight">🏧 Quản lý Rút tiền (Giải ngân)</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500 hover:shadow-md transition">
+                <h3 class="text-slate-500 font-bold text-xs uppercase tracking-wider">Lệnh chờ xử lý</h3>
+                <p class="text-4xl font-black text-slate-800 mt-2"><%= typeof withdrawals !== 'undefined' ? withdrawals.length : 0 %></p>
+            </div>
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 border-l-4 border-l-orange-500 bg-orange-50/30 hover:shadow-md transition">
+                <h3 class="text-orange-600 font-bold text-xs uppercase tracking-wider">Tổng tiền cần giải ngân</h3>
+                <p class="text-3xl font-black text-orange-700 mt-2">
+                    <%= (typeof withdrawals !== 'undefined' ? withdrawals.reduce((sum, w) => sum + w.amount, 0) : 0).toLocaleString('vi-VN') %> đ
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-6 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                    <span class="mr-2">📄</span> Danh sách yêu cầu rút tiền
+                </h3>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-slate-400 text-[10px] uppercase tracking-widest border-b border-slate-50 bg-slate-50/30">
+                            <th class="px-6 py-4">Thời gian tạo</th>
+                            <th class="px-6 py-4">Tài khoản User</th>
+                            <th class="px-6 py-4 text-right">Số tiền rút</th>
+                            <th class="px-6 py-4 text-center">Trạng thái</th>
+                            <th class="px-6 py-4 text-center">Thao tác Kế toán</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        <% if (typeof withdrawals === 'undefined' || withdrawals.length === 0) { %>
+                            <tr>
+                                <td colspan="5" class="px-6 py-10 text-center text-slate-400 font-medium italic">Không có yêu cầu rút tiền nào đang chờ xử lý. Tuyệt vời!</td>
+                            </tr>
+                        <% } else { %>
+                            <% withdrawals.forEach(req => { %>
+                                <tr class="hover:bg-slate-50/80 transition group">
+                                    <td class="px-6 py-4 text-xs text-slate-500">
+                                        <%= new Date(req.createdAt).toLocaleString('vi-VN', {hour: '2-digit', minute:'2-digit', day:'2-digit', month:'2-digit', year:'numeric'}) %>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="font-bold text-slate-700 text-sm"><%= req.user?.name || 'Tài khoản ẩn danh' %></p>
+                                        <p class="text-[10px] text-slate-400">Mã lệnh: #<%= req._id.toString().slice(-6).toUpperCase() %></p>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span class="text-orange-600 font-black text-sm">-<%= req.amount.toLocaleString('vi-VN') %> đ</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-lg text-[10px] font-black border border-yellow-200">ĐANG XỬ LÝ</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <button onclick="approveWithdraw('<%= req._id %>')" class="text-[10px] font-black text-white bg-green-500 px-4 py-2 rounded-xl hover:bg-green-600 shadow-sm shadow-green-100 transition transform hover:scale-105">
+                                            ✅ ĐÃ CHUYỂN TIỀN
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function approveWithdraw(id) {
+            
+            if(confirm('⚠️ XÁC NHẬN NGHIỆP VỤ:\nBạn ĐÃ DÙNG APP NGÂN HÀNG để chuyển tiền mặt cho khách hàng này chưa?\n\nHành động này không thể hoàn tác!')) {
+                try {
+                    const res = await fetch(`/api/admin/withdraw/${id}/approve`, { method: 'PUT' });
+                    if(res.ok) {
+                        alert('🎉 Đã xác nhận giải ngân thành công! Ví của khách hàng đã cập nhật trạng thái.');
+                        location.reload(); 
+                    } else {
+                        alert('❌ Có lỗi xảy ra, vui lòng thử lại!');
+                    }
+                } catch(err) {
+                    alert('❌ Mất kết nối tới máy chủ!');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

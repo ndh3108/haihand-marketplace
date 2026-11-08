@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sửa tin đăng</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <style>.ck-editor__editable { min-height: 250px; }</style>
+</head>
+<body class="bg-slate-100 flex min-h-screen font-sans">
+    
+    <%- include('partials/sidebar') %>
+
+    <div class="flex-1 p-10 h-screen overflow-y-auto">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800">✏️ Chỉnh sửa tin đăng</h2>
+
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 max-w-5xl mx-auto">
+            <form action="/post/update/<%= post._id %>" method="POST" enctype="multipart/form-data">
+                
+                <div class="mb-6">
+                    <label class="block text-slate-700 font-bold mb-2">Tiêu đề tin đăng</label>
+                    <input type="text" name="title" value="<%= post.title %>" class="w-full p-3 border border-slate-300 rounded-lg bg-slate-50 focus:border-blue-500" required>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                    <div>
+                        <label class="block text-slate-700 font-bold mb-2">Giá đề xuất (VNĐ)</label>
+                        <input type="number" name="price" value="<%= post.price %>" class="w-full p-3 border border-slate-300 rounded-lg bg-slate-50 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-slate-700 font-bold mb-2">Khu vực</label>
+                        <div class="flex space-x-4">
+                            <select name="city" class="w-1/2 p-3 border border-slate-300 rounded-lg bg-slate-50 outline-none">
+                                <option value="<%= post.city %>" selected><%= post.city %></option>
+                                <option value="TP. HCM">TP. HCM</option>
+                                <option value="Hà Nội">Hà Nội</option>
+                            </select>
+                            <select name="area" class="w-1/2 p-3 border border-slate-300 rounded-lg bg-slate-50 outline-none">
+                                <option value="<%= post.area %>" selected><%= post.area %></option>
+                                <option value="Quận 1">Quận 1</option>
+                                <option value="Quận 7">Quận 7</option>
+                                <option value="Ba Đình">Ba Đình</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-slate-700 font-bold mb-2">Hình ảnh hiện tại</label>
+                    <% if(post.image) { %>
+                        <img src="/uploads/<%= post.image %>" class="h-32 rounded-lg border border-slate-300 mb-3">
+                    <% } else { %>
+                        <p class="text-gray-400">Không có ảnh</p>
+                    <% } %>
+                    
+                    <label class="block text-sm text-slate-500 mb-1">Chọn ảnh mới (nếu muốn thay đổi):</label>
+                    <input type="file" name="image" class="w-full p-2 border border-slate-300 rounded-lg bg-white">
+                </div>
+
+                <div class="mb-8">
+                    <label class="block text-slate-700 font-bold mb-2">Mô tả chi tiết</label>
+                    <textarea id="editor" name="description"><%= post.description %></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-4">
+                    <a href="/posts" class="px-6 py-3 rounded-lg text-slate-600 hover:bg-slate-100 font-bold">Hủy bỏ</a>
+                    <button type="submit" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-lg">
+                        💾 Lưu thay đổi
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        ClassicEditor.create(document.querySelector('#editor')).catch(error => { console.error(error); });
+    </script>
+</body>
+</html>

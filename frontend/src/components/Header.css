@@ -1,0 +1,62 @@
+.chat-icon-wrapper {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 15px; /* Khoảng cách với Avatar */
+}
+
+.chat-icon {
+  font-size: 24px;
+  color: #555;
+}
+
+/* Kiểu dáng cho số thông báo màu đỏ */
+.badge-count {
+  position: absolute;
+  top: -8px;      /* Chỉnh lên xuống */
+  right: -8px;    /* Chỉnh sang trái phải */
+  background-color: #ff4d4f; /* Màu đỏ thông báo */
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%; /* Làm hình tròn */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white; /* Tạo viền trắng cho nổi bật */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+/* Tinh chỉnh Logo  */
+.logo-img {
+    height: 45px; /* Điều chỉnh kích thước vừa vặn */
+    object-fit: contain;
+}
+
+/* Tinh chỉnh Thanh tìm kiếm chi tiết hơn  */
+.search-bar-wrapper {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 8px; /* Bo góc chuyên nghiệp */
+    padding: 2px 10px;
+    width: 40%; /* Độ rộng thanh tìm kiếm */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Đổ bóng nhẹ cho chi tiết */
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    padding: 10px;
+    flex: 1;
+}
+
+.search-button {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}

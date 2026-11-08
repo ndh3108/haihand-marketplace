@@ -1,0 +1,94 @@
+<!-- EDIT USER VIEW (Inner Content Only for AdminLayout Outlet) -->
+<div class="space-y-6 max-w-2xl mx-auto">
+    
+    <!-- Title & Back Navigation -->
+    <div class="flex items-center justify-between">
+        <div>
+            <div class="flex items-center gap-2.5">
+                <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    ✏️ Chỉnh Sửa Người Dùng
+                </h2>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800">
+                    #<%= user._id.toString().slice(-6).toUpperCase() %>
+                </span>
+            </div>
+            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 font-medium">
+                Cập nhật thông tin tài khoản và quyền hạn hệ thống.
+            </p>
+        </div>
+        <a href="/users" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-700/80 transition text-xs font-bold">
+            <i class="fas fa-arrow-left text-[10px]"></i>
+            <span>Quay lại</span>
+        </a>
+    </div>
+
+    <!-- Edit Form Card -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 p-8 transition-colors duration-200">
+        <form action="/users/edit/<%= user._id %>" method="POST" class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Họ và tên <span class="text-rose-500">*</span></label>
+                <input 
+                    type="text" 
+                    name="name" 
+                    value="<%= user.name %>" 
+                    required
+                    class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-4 focus:ring-purple-500/15 outline-none transition"
+                />
+            </div>
+            
+            <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Địa chỉ Email <span class="text-rose-500">*</span></label>
+                <input 
+                    type="email" 
+                    name="email" 
+                    value="<%= user.email %>" 
+                    required
+                    class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-4 focus:ring-purple-500/15 outline-none transition"
+                />
+            </div>
+            
+            <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Số điện thoại</label>
+                <input 
+                    type="text" 
+                    name="phone" 
+                    value="<%= user.phone || '' %>" 
+                    placeholder="Chưa cập nhật SĐT"
+                    class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-4 focus:ring-purple-500/15 outline-none transition"
+                />
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Vai trò hệ thống</label>
+                <select 
+                    name="role" 
+                    class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-4 focus:ring-purple-500/15 outline-none transition cursor-pointer"
+                >
+                    <option value="Khách hàng" <%= user.role === 'Khách hàng' ? 'selected' : '' %>>Khách hàng</option>
+                    <option value="Admin" <%= user.role === 'Admin' ? 'selected' : '' %>>Admin (Quản trị viên)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Trạng thái tài khoản</label>
+                <select 
+                    name="status" 
+                    class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-4 focus:ring-purple-500/15 outline-none transition cursor-pointer"
+                >
+                    <option value="active" <%= (user.status !== 'locked' && !user.isBanned) ? 'selected' : '' %>>✓ Hoạt động bình thường</option>
+                    <option value="locked" <%= (user.status === 'locked' || user.isBanned) ? 'selected' : '' %>>🔒 Bị khóa (Banned)</option>
+                </select>
+            </div>
+
+            <div class="pt-4 flex gap-3">
+                <a href="/users" class="w-1/3 text-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold py-3 rounded-2xl transition text-xs">
+                    Hủy bỏ
+                </a>
+                <button type="submit" class="w-2/3 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-2xl shadow-md shadow-purple-500/25 transition text-xs">
+                    Lưu thay đổi
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>

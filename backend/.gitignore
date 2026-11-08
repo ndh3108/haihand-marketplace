@@ -1,0 +1,14 @@
+# Bỏ qua thư viện (nặng, không cần đưa lên Git)
+node_modules/
+
+# Bỏ qua file chứa mật khẩu, key bảo mật (CỰC KỲ QUAN TRỌNG)
+.env
+
+# Bỏ qua các file log báo lỗi của hệ thống
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Bỏ qua các file rác của hệ điều hành
+.DS_Store
+Thumbs.db

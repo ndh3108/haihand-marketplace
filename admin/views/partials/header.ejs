@@ -1,0 +1,576 @@
+<!-- Modern SaaS Sticky Top Navbar (Header) with Purple Theme & Dark Mode Support -->
+<header class="h-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 sticky top-0 z-40 flex items-center justify-between px-6 sm:px-8 shadow-sm transition-colors duration-200">
+    
+    <!-- Left: Mobile Hamburger Toggle & Mobile Brand -->
+    <div class="flex items-center gap-3">
+        <!-- Hamburger Menu Button (Crucial for mobile responsiveness & collapsing) -->
+        <button 
+            id="sidebarToggleBtn"
+            onclick="window.toggleSidebar()" 
+            class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-700/80 transition-all duration-200 focus:outline-none"
+            title="Đóng / Mở Menu Sidebar"
+            aria-label="Toggle Navigation Sidebar"
+        >
+            <i class="fas fa-bars text-sm"></i>
+        </button>
+
+        <!-- Mobile-Only Brand Icon -->
+        <a href="/dashboard" class="flex lg:hidden items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow-md shadow-purple-500/20">
+                ⚡
+            </div>
+            <span class="text-base font-extrabold text-slate-900 dark:text-white">Hai<span class="text-purple-600">Hand</span></span>
+        </a>
+    </div>
+
+    <!-- Center: Modern Pill-Shaped Global Search Bar -->
+    <div class="hidden md:flex items-center flex-1 max-w-md mx-6">
+        <div class="relative w-full">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400 dark:text-slate-500">
+                <i class="fas fa-search text-xs"></i>
+            </span>
+            <input 
+                type="text" 
+                id="globalAdminSearch"
+                placeholder="Tìm kiếm đơn hàng, người dùng, tin đăng..." 
+                class="w-full pl-10 pr-16 py-2.5 bg-slate-100/80 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 text-xs font-medium rounded-full border border-slate-200/60 dark:border-slate-700/60 focus:border-purple-400 dark:focus:border-purple-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-purple-500/15 outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500 shadow-inner"
+            />
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <kbd class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold text-slate-400 dark:text-slate-500 bg-slate-200/60 dark:bg-slate-700/60 rounded-md border border-slate-300/40 dark:border-slate-600/40 shadow-xs">⌘K</kbd>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Actions Cluster (Theme Toggle, Notifications, System Status, Admin Profile) -->
+    <div class="flex items-center gap-2.5 sm:gap-3.5">
+        
+        <!-- 1. System Health Status Badge -->
+        <div class="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Hệ thống: Trực tuyến</span>
+        </div>
+
+        <!-- 1.5. Auto-Approve Posts Global Toggle Switch -->
+        <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60">
+            <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                <span>⚡</span>
+                <span class="hidden xl:inline">Tự duyệt bài:</span>
+            </span>
+            <button 
+                id="autoApproveToggleBtn" 
+                onclick="window.toggleAutoApprove()" 
+                class="w-8 h-4.5 flex items-center bg-slate-300 dark:bg-slate-700 rounded-full p-0.5 duration-200 cursor-pointer"
+                title="Bật/Tắt tự động duyệt bài đăng"
+                aria-label="Toggle Auto-Approve Posts"
+            >
+                <div id="autoApproveToggleDot" class="bg-white w-3.5 h-3.5 rounded-full shadow-md transform duration-200 translate-x-0"></div>
+            </button>
+            <span id="autoApproveStatusText" class="text-[10px] font-black uppercase text-slate-400">TẮT</span>
+        </div>
+
+        <!-- 2. Global Light/Dark Theme Switcher Toggle -->
+        <button 
+            id="themeToggleBtn"
+            onclick="window.toggleTheme()" 
+            class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-amber-400 hover:text-purple-600 dark:hover:text-amber-300 hover:bg-purple-50 dark:hover:bg-slate-700/80 transition-all duration-200 hover:scale-105" 
+            title="Chuyển đổi Chế độ Sáng / Tối"
+            aria-label="Toggle Light Dark Theme"
+        >
+            <i id="themeToggleIcon" class="fas fa-moon text-sm"></i>
+        </button>
+
+        <!-- 3. System Notification Bell with Animated Unread Badge & Dropdown Center -->
+        <div class="relative" id="headerNotifContainer">
+            <button 
+                id="headerNotifBtn"
+                onclick="window.toggleAdminNotifs(event)" 
+                class="relative p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-700/80 transition-all duration-200 hover:scale-105 focus:outline-none"
+                title="Thông báo hệ thống"
+                aria-label="System Notifications"
+                aria-expanded="false"
+            >
+                <i class="fas fa-bell text-sm"></i>
+                <span id="header-notif-badge" class="absolute -top-1 -right-1 bg-purple-600 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-md shadow-purple-500/40 hidden">
+                    <span class="absolute inset-0 rounded-full bg-purple-500 animate-ping opacity-75"></span>
+                    <span class="relative z-10" id="header-notif-badge-count">0</span>
+                </span>
+            </button>
+
+            <!-- Floating SaaS Notification Center Dropdown -->
+            <div 
+                id="headerNotifDropdown" 
+                class="hidden absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/80 dark:border-slate-800/80 py-0 z-50 overflow-hidden transform origin-top-right transition-all duration-200 ease-out scale-95 opacity-0"
+                role="region"
+                aria-label="Notification Center"
+            >
+                <!-- Dropdown Header -->
+                <div class="px-4 py-3 bg-slate-50/90 dark:bg-slate-800/90 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs">🔔</span>
+                        <h3 class="font-bold text-slate-800 dark:text-slate-100 text-xs uppercase tracking-wider">Thông báo hệ thống</h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="window.testAdminNotif(event)" class="text-[11px] text-purple-600 dark:text-purple-400 font-bold hover:underline transition">Tạo Test</button>
+                        <span class="text-slate-300 dark:text-slate-700 text-xs">|</span>
+                        <button onclick="window.markNotifsAsRead(event)" class="text-[11px] text-slate-500 dark:text-slate-400 font-bold hover:text-purple-600 dark:hover:text-purple-400 transition">Đã đọc</button>
+                    </div>
+                </div>
+
+                <!-- Dropdown Notification List -->
+                <div id="header-notif-list" class="max-h-96 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/80 bg-white/60 dark:bg-slate-900/60 text-slate-800 dark:text-slate-200">
+                    <div class="p-6 text-center text-xs text-slate-400 flex flex-col items-center justify-center gap-2">
+                        <i class="fas fa-spinner fa-spin text-purple-600 text-base"></i>
+                        <span>Đang tải thông báo...</span>
+                    </div>
+                </div>
+
+                <!-- Dropdown Footer -->
+                <div class="px-4 py-2 bg-slate-50/70 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800/60 text-center">
+                    <span class="text-[10px] text-slate-400 font-medium">Tự động cập nhật qua Real-time Socket</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block"></div>
+
+        <!-- 4. Modern Admin Profile Section with Clickable Dropdown Menu -->
+        <div class="relative" id="adminProfileContainer">
+            <button 
+                id="adminProfileBtn"
+                onclick="window.toggleAdminProfileMenu(event)"
+                class="flex items-center gap-3 p-1.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 focus:outline-none group"
+                aria-expanded="false"
+                aria-haspopup="true"
+            >
+                <!-- Avatar with Gradient & Initials -->
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 via-purple-700 to-indigo-600 text-white flex items-center justify-center font-black text-xs shadow-md shadow-purple-500/25 group-hover:scale-105 transition-transform shrink-0">
+                    T
+                </div>
+                
+                <!-- Admin Info Text -->
+                <div class="hidden sm:flex flex-col text-left">
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition leading-tight">
+                        Lê Minh Triết
+                    </span>
+                    <span class="text-[10px] text-purple-600 dark:text-purple-400 font-bold mt-0.5">
+                        Super Admin
+                    </span>
+                </div>
+
+                <!-- Chevron Down Icon -->
+                <i id="adminProfileChevron" class="fas fa-chevron-down text-[10px] text-slate-400 group-hover:text-purple-600 transition-transform duration-200 hidden sm:inline-block ml-1"></i>
+            </button>
+
+            <!-- Clickable Profile Dropdown Menu -->
+            <div 
+                id="adminProfileDropdown" 
+                class="hidden absolute right-0 top-full mt-2 w-60 bg-white dark:bg-slate-800 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-black/50 border border-slate-200/80 dark:border-slate-700/80 py-2 z-50 transform opacity-0 translate-y-1 transition-all duration-200"
+            >
+                <!-- Dropdown Header -->
+                <div class="px-4 py-2.5 border-b border-slate-100 dark:border-slate-700/80">
+                    <p class="text-[11px] font-medium text-slate-400 dark:text-slate-400">Đăng nhập tài khoản</p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate mt-0.5">adminne (Super Admin)</p>
+                </div>
+
+                <!-- Menu Items -->
+                <div class="py-1">
+                    <a href="/dashboard" class="flex items-center gap-3 px-4 py-2.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-700/70 hover:text-purple-600 dark:hover:text-purple-400 transition font-medium">
+                        <i class="fas fa-chart-pie w-4 text-slate-400 group-hover:text-purple-600"></i>
+                        <span>Bảng điều khiển</span>
+                    </a>
+                    <a href="/categories" class="flex items-center gap-3 px-4 py-2.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-700/70 hover:text-purple-600 dark:hover:text-purple-400 transition font-medium">
+                        <i class="fas fa-cog w-4 text-slate-400 group-hover:text-purple-600"></i>
+                        <span>Cài đặt hệ thống</span>
+                    </a>
+                    <a href="http://localhost:3000" target="_blank" class="flex items-center gap-3 px-4 py-2.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-700/70 hover:text-purple-600 dark:hover:text-purple-400 transition font-medium">
+                        <i class="fas fa-store w-4 text-slate-400 group-hover:text-purple-600"></i>
+                        <span>Xem Sàn HaiHand</span>
+                        <i class="fas fa-external-link-alt text-[9px] text-slate-400 ml-auto"></i>
+                    </a>
+                </div>
+
+                <div class="border-t border-slate-100 dark:border-slate-700/80 my-1"></div>
+
+                <!-- Logout Link -->
+                <div class="px-2 pt-1">
+                    <a 
+                        href="/logout" 
+                        class="flex items-center gap-3 px-3 py-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition"
+                    >
+                        <i class="fas fa-sign-out-alt w-4"></i>
+                        <span>Đăng xuất</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</header>
+
+<!-- Header Helper JavaScript for Dropdown & Mobile Search -->
+<script>
+    // Profile Dropdown Toggle Logic
+    window.toggleAdminProfileMenu = function(e) {
+        if (e) e.stopPropagation();
+        window.closeAdminNotifs();
+        const dropdown = document.getElementById('adminProfileDropdown');
+        const chevron = document.getElementById('adminProfileChevron');
+        const btn = document.getElementById('adminProfileBtn');
+        if (!dropdown) return;
+
+        const isHidden = dropdown.classList.contains('hidden');
+        if (isHidden) {
+            dropdown.classList.remove('hidden');
+            setTimeout(() => {
+                dropdown.classList.remove('opacity-0', 'translate-y-1');
+                dropdown.classList.add('opacity-100', 'translate-y-0');
+            }, 10);
+            if (chevron) chevron.classList.add('rotate-180');
+            if (btn) btn.setAttribute('aria-expanded', 'true');
+        } else {
+            dropdown.classList.remove('opacity-100', 'translate-y-0');
+            dropdown.classList.add('opacity-0', 'translate-y-1');
+            setTimeout(() => dropdown.classList.add('hidden'), 200);
+            if (chevron) chevron.classList.remove('rotate-180');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+    };
+
+    // Notification Dropdown Toggle & Smooth SaaS Animation
+    window.isNotifOpen = false;
+
+    window.toggleAdminNotifs = function(e) {
+        if (e) e.stopPropagation();
+        const dropdown = document.getElementById('headerNotifDropdown');
+        const btn = document.getElementById('headerNotifBtn');
+        if (!dropdown) return;
+
+        // Close profile menu if open
+        const profileDropdown = document.getElementById('adminProfileDropdown');
+        if (profileDropdown && !profileDropdown.classList.contains('hidden')) {
+            profileDropdown.classList.remove('opacity-100', 'translate-y-0');
+            profileDropdown.classList.add('opacity-0', 'translate-y-1');
+            setTimeout(() => profileDropdown.classList.add('hidden'), 200);
+            const profileChevron = document.getElementById('adminProfileChevron');
+            if (profileChevron) profileChevron.classList.remove('rotate-180');
+            const profileBtn = document.getElementById('adminProfileBtn');
+            if (profileBtn) profileBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        window.isNotifOpen = !window.isNotifOpen;
+
+        if (window.isNotifOpen) {
+            dropdown.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                dropdown.classList.remove('scale-95', 'opacity-0');
+                dropdown.classList.add('scale-100', 'opacity-100');
+            });
+            if (btn) btn.setAttribute('aria-expanded', 'true');
+            window.fetchAdminNotifs();
+        } else {
+            window.closeAdminNotifs();
+        }
+    };
+
+    window.closeAdminNotifs = function() {
+        if (!window.isNotifOpen) return;
+        window.isNotifOpen = false;
+        const dropdown = document.getElementById('headerNotifDropdown');
+        const btn = document.getElementById('headerNotifBtn');
+        if (dropdown) {
+            dropdown.classList.remove('scale-100', 'opacity-100');
+            dropdown.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                if (!window.isNotifOpen) dropdown.classList.add('hidden');
+            }, 200);
+        }
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+    };
+
+    // Close Dropdowns when clicking outside (using mousedown for instant detection)
+    document.addEventListener('mousedown', function(e) {
+        // 1. Profile Dropdown outside click
+        const profileContainer = document.getElementById('adminProfileContainer');
+        const profileDropdown = document.getElementById('adminProfileDropdown');
+        const profileChevron = document.getElementById('adminProfileChevron');
+        const profileBtn = document.getElementById('adminProfileBtn');
+
+        if (profileContainer && !profileContainer.contains(e.target) && profileDropdown && !profileDropdown.classList.contains('hidden')) {
+            profileDropdown.classList.remove('opacity-100', 'translate-y-0');
+            profileDropdown.classList.add('opacity-0', 'translate-y-1');
+            setTimeout(() => profileDropdown.classList.add('hidden'), 200);
+            if (profileChevron) profileChevron.classList.remove('rotate-180');
+            if (profileBtn) profileBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        // 2. Notification Dropdown outside click
+        const notifContainer = document.getElementById('headerNotifContainer');
+        if (notifContainer && !notifContainer.contains(e.target)) {
+            window.closeAdminNotifs();
+        }
+    });
+
+    // Helper to resolve admin notification destination URLs
+    function resolveAdminNotifLink(notif) {
+        let targetLink = notif.targetUrl || notif.link || '/';
+        let titleLower = (notif.title || '').toLowerCase();
+        let msgLower = (notif.message || '').toLowerCase();
+
+        if (titleLower.includes('shop') || titleLower.includes('người bán') || titleLower.includes('b2c') || msgLower.includes('mở shop')) {
+            targetLink = '/admin/seller-applications';
+        } else if (titleLower.includes('bài viết') || titleLower.includes('tin đăng') || titleLower.includes('sản phẩm') || msgLower.includes('chờ duyệt') || msgLower.includes('tin đăng')) {
+            targetLink = '/posts';
+        } else if (titleLower.includes('rút tiền') || titleLower.includes('giải ngân')) {
+            targetLink = '/admin/withdrawals';
+        } else if (titleLower.includes('vi phạm') || titleLower.includes('báo cáo') || titleLower.includes('cảnh báo')) {
+            targetLink = '/admin/reports';
+        } else if (titleLower.includes('đơn hàng') || titleLower.includes('chốt đơn') || titleLower.includes('đơn mua') || titleLower.includes('giao hàng')) {
+            targetLink = '/orders';
+        } else if (titleLower.includes('người dùng') || titleLower.includes('tài khoản')) {
+            targetLink = '/users';
+        }
+
+        // Prevent javascript: URLs and open redirects
+        if (!targetLink || typeof targetLink !== 'string' || !targetLink.startsWith('/') || targetLink.startsWith('//')) {
+            targetLink = '/';
+        }
+
+        return targetLink;
+    }
+
+    // Helper to escape HTML characters and prevent Stored/DOM XSS
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    // SPA-Aware Notification Redirection Click Handler
+    window.handleNotifClick = function(event, targetLink) {
+        if (event) event.preventDefault();
+        if (!targetLink || targetLink === '#') return;
+        window.closeAdminNotifs();
+        if (typeof window.spaNavigate === 'function') {
+            window.spaNavigate(targetLink);
+        } else {
+            window.location.href = targetLink;
+        }
+    };
+
+    // Fetch notifications & populate Header Dropdown
+    window.fetchAdminNotifs = async function() {
+        try {
+            const res = await fetch('/api/notifications?scope=admin');
+            if (!res.ok) return;
+            const data = await res.json();
+            
+            const headerBadge = document.getElementById('header-notif-badge');
+            const badgeCount = document.getElementById('header-notif-badge-count');
+            const count = data.unreadCount || 0;
+            
+            if (headerBadge && badgeCount) {
+                if (count > 0) {
+                    badgeCount.textContent = count > 99 ? '99+' : count;
+                    headerBadge.classList.remove('hidden');
+                } else {
+                    headerBadge.classList.add('hidden');
+                }
+            }
+
+            const list = document.getElementById('header-notif-list');
+            if (!list) return;
+
+            if (!data.notifications || data.notifications.length === 0) {
+                list.innerHTML = `
+                    <div class="p-8 text-center text-xs text-slate-400 flex flex-col items-center justify-center gap-2">
+                        <span class="text-2xl opacity-60">📭</span>
+                        <p class="font-medium">Chưa có thông báo hệ thống nào.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = data.notifications.map(n => {
+                const rawLink = resolveAdminNotifLink(n);
+                const safeLink = escapeHtml(rawLink);
+                const safeTitle = escapeHtml(n.title || 'Thông báo hệ thống');
+                const safeMessage = escapeHtml(n.message || '');
+                const timeStr = escapeHtml(new Date(n.createdAt || Date.now()).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ', ' + new Date(n.createdAt || Date.now()).toLocaleDateString('vi-VN'));
+
+                return `
+                    <a href="${safeLink}" data-link="${safeLink}" onclick="window.handleNotifClick(event, this.getAttribute('data-link'))" class="group block p-3.5 hover:bg-purple-50/70 dark:hover:bg-slate-800/80 transition duration-150 border-b border-slate-100/70 dark:border-slate-800/70 cursor-pointer ${!n.isRead ? 'bg-purple-50/35 dark:bg-purple-950/25' : ''}">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition truncate">${safeTitle}</h4>
+                            ${!n.isRead ? '<span class="w-2 h-2 rounded-full bg-purple-600 shrink-0 shadow-sm shadow-purple-500"></span>' : ''}
+                        </div>
+                        <p class="text-[11px] text-slate-600 dark:text-slate-300 leading-snug line-clamp-2">${safeMessage}</p>
+                        <div class="flex items-center justify-between text-[9px] text-slate-400 mt-2 font-mono">
+                            <span>${timeStr}</span>
+                            <span class="text-purple-600 dark:text-purple-400 font-sans font-semibold opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                Xem chi tiết <i class="fas fa-chevron-right text-[8px]"></i>
+                            </span>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+        } catch (e) {
+            console.error('Lỗi tải thông báo Header:', e);
+        }
+    };
+
+    // Mark all notifications as read
+    window.markNotifsAsRead = async function(event) {
+        if (event) event.stopPropagation();
+        try {
+            await fetch('/api/admin/notifications/read', { method: 'POST' });
+            window.fetchAdminNotifs();
+        } catch (e) {
+            console.error('Lỗi đánh dấu đã đọc:', e);
+        }
+    };
+
+    // Generate test notification
+    window.testAdminNotif = async function(event) {
+        if (event) event.stopPropagation();
+        try {
+            await fetch('/api/admin/test-notif');
+            window.fetchAdminNotifs();
+            if (!window.isNotifOpen) window.toggleAdminNotifs();
+        } catch (e) {
+            console.error('Lỗi tạo thông báo test:', e);
+        }
+    };
+
+    // Socket.io Real-Time System Notification Listener (Dedicated admin_system_room)
+    try {
+        if (typeof io !== 'undefined') {
+            const socket = io('http://localhost:4000', {
+                transports: ['websocket', 'polling'],
+                auth: { role: 'admin' }
+            });
+
+            // Join dedicated admin_system_room upon connection
+            socket.on('connect', function() {
+                console.log('⚡ Socket: Đã kết nối Socket.IO. Tham gia admin_system_room...');
+                socket.emit('join_admin_room', { role: 'admin' });
+                socket.emit('join', 'admin_system_room');
+            });
+
+            // Listen exclusively to admin_system_room broadcasts and ignore personal user events
+            socket.on('new_admin_notification', function(notif) {
+                console.log('⚡ Socket: Nhận thông báo Admin mới trong Header Dropdown:', notif);
+                
+                // 1. Tăng badge thông báo với hiệu ứng radar ping
+                const headerBadge = document.getElementById('header-notif-badge');
+                const badgeCount = document.getElementById('header-notif-badge-count');
+                let count = 0;
+                if (headerBadge && !headerBadge.classList.contains('hidden') && badgeCount) {
+                    count = parseInt(badgeCount.textContent, 10) || 0;
+                }
+                const newCount = count + 1;
+                if (headerBadge && badgeCount) {
+                    badgeCount.textContent = newCount > 99 ? '99+' : newCount;
+                    headerBadge.classList.remove('hidden');
+                }
+
+                // 2. Chèn thông báo mới lên đầu danh sách trong dropdown (với HTML sanitization chống XSS)
+                const list = document.getElementById('header-notif-list');
+                if (list) {
+                    const emptyPlaceholder = list.querySelector('.text-slate-400');
+                    if (emptyPlaceholder) emptyPlaceholder.remove();
+
+                    const rawLink = resolveAdminNotifLink(notif);
+                    const safeLink = escapeHtml(rawLink);
+                    const safeTitle = escapeHtml(notif.title || 'Thông báo mới');
+                    const safeMessage = escapeHtml(notif.message || '');
+                    const newHtml = `
+                        <a href="${safeLink}" data-link="${safeLink}" onclick="window.handleNotifClick(event, this.getAttribute('data-link'))" class="group block p-3.5 hover:bg-purple-50/70 dark:hover:bg-slate-800/80 transition duration-150 border-b border-slate-100/70 dark:border-slate-800/70 cursor-pointer bg-purple-50/50 dark:bg-purple-950/40 animate-pulse">
+                            <div class="flex items-center justify-between gap-2 mb-1">
+                                <h4 class="text-xs font-bold text-purple-700 dark:text-purple-400 group-hover:underline truncate">${safeTitle}</h4>
+                                <span class="text-[9px] bg-purple-600 text-white font-black px-1.5 py-0.5 rounded-full uppercase shrink-0">Mới</span>
+                            </div>
+                            <p class="text-[11px] text-slate-700 dark:text-slate-200 leading-snug font-semibold line-clamp-2">${safeMessage}</p>
+                            <div class="flex items-center justify-between text-[9px] text-slate-400 mt-2 font-mono">
+                                <span>Vừa xong</span>
+                                <span class="text-purple-600 dark:text-purple-400 font-sans font-semibold flex items-center gap-1">
+                                    Xem ngay <i class="fas fa-chevron-right text-[8px]"></i>
+                                </span>
+                            </div>
+                        </a>
+                    `;
+                    list.insertAdjacentHTML('afterbegin', newHtml);
+                }
+            });
+        }
+    } catch(e) {
+        console.warn('Lỗi kết nối Socket.io ở Header:', e);
+    }
+
+    // Auto-fetch notifications on load & periodic refresh
+    window.fetchAdminNotifs();
+    setInterval(window.fetchAdminNotifs, 10000);
+
+    // Auto-Approve Posts Logic
+    let isAutoApproveOn = false;
+    function updateAutoApproveUI(enabled) {
+        isAutoApproveOn = enabled;
+        const btn = document.getElementById('autoApproveToggleBtn');
+        const dot = document.getElementById('autoApproveToggleDot');
+        const text = document.getElementById('autoApproveStatusText');
+        if (!btn || !dot || !text) return;
+        
+        if (enabled) {
+            btn.classList.remove('bg-slate-300', 'dark:bg-slate-700');
+            btn.classList.add('bg-purple-600');
+            dot.classList.remove('translate-x-0');
+            dot.classList.add('translate-x-3.5');
+            text.textContent = 'BẬT';
+            text.className = 'text-[10px] font-black uppercase text-purple-600 dark:text-purple-400';
+        } else {
+            btn.classList.remove('bg-purple-600');
+            btn.classList.add('bg-slate-300', 'dark:bg-slate-700');
+            dot.classList.remove('translate-x-3.5');
+            dot.classList.add('translate-x-0');
+            text.textContent = 'TẮT';
+            text.className = 'text-[10px] font-black uppercase text-slate-400';
+        }
+    }
+
+    async function fetchAutoApproveSetting() {
+        try {
+            const res = await fetch('/api/admin/settings/auto-approve');
+            if (res.ok) {
+                const data = await res.json();
+                updateAutoApproveUI(data.autoApprovePosts === true);
+            }
+        } catch (e) {
+            console.error('Lỗi khi tải cài đặt tự duyệt bài:', e);
+        }
+    }
+
+    window.toggleAutoApprove = async function() {
+        try {
+            const res = await fetch('/api/admin/settings/toggle-auto-approve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                updateAutoApproveUI(data.autoApprovePosts === true);
+            }
+        } catch (e) {
+            console.error('Lỗi khi cập nhật tự duyệt bài:', e);
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fetchAutoApproveSetting);
+    } else {
+        fetchAutoApproveSetting();
+    }
+</script>

@@ -1,0 +1,119 @@
+
+.bg-chotot {
+    background-color: #FFBA00 !important;
+}
+
+.text-chotot {
+    color: #FFBA00 !important;
+}
+
+.btn-chotot {
+    background-color: #FFBA00;
+    color: #222;
+    font-weight: bold;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-chotot:hover {
+    background-color: #e6a800; 
+    transform: translateY(-1px);
+}
+
+
+.sticky-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #FFF;
+    border-top: 1px solid #ddd;
+    padding: 15px;
+    z-index: 1000; 
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+    animation: slideUp 0.5s ease-out;
+}
+
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+
+.category-item {
+    min-width: 80px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.category-item:hover {
+    transform: translateY(-3px); 
+}
+
+.category-icon {
+    width: 50px;
+    height: 50px;
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 8px;
+    border: 1px solid #eee;
+}
+
+.category-item:hover .category-icon {
+    background-color: #fff8dd; 
+    border-color: #FFBA00;
+}
+
+.fab-btn {
+    position: fixed; 
+    bottom: 30px;    
+    right: 30px;     
+    width: 65px;     
+    height: 65px;    
+    background-color: #FFBA00; 
+    border-radius: 50%; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(255, 186, 0, 0.5); 
+    border: 2px solid #fff;
+    cursor: pointer;
+    z-index: 1100; 
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+
+.fab-btn:hover {
+    background-color: #ffc107;
+    transform: scale(1.1) rotate(90deg); 
+    box-shadow: 0 8px 16px rgba(255, 186, 0, 0.6);
+}
+
+
+.fab-icon {
+    font-size: 40px;
+    color: #222;
+    font-weight: 300;
+    line-height: 1;
+    margin-top: -4px; 
+}
+
+
+.has-banner .fab-btn {
+    bottom: 100px;
+}
+
+.hover-text-warning:hover {
+    color: #ffc107 !important; 
+    text-decoration: underline !important;
+}
+
+.hover-scale:hover {
+    transform: scale(1.1);
+    transition: 0.2s ease-in-out;
+}

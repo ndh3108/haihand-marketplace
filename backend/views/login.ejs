@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập Admin HaiHand</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-yellow-400 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-10 rounded-2xl shadow-2xl w-96 border-4 border-slate-900">
+        <h1 class="text-4xl font-black text-center text-slate-900 mb-2">HaiHand</h1>
+        <p class="text-center text-slate-500 mb-8 font-bold">Admin Dashboard</p>
+
+        <form action="/login" method="POST" class="mb-6">
+            <div class="mb-4">
+                <label class="block font-bold text-sm mb-1">Tài khoản</label>
+                <input type="text" name="username" class="w-full p-3 border-2 border-slate-200 rounded-lg focus:border-yellow-400 focus:outline-none transition" placeholder="Username" required>
+            </div>
+            <div class="mb-6">
+                <label class="block font-bold text-sm mb-1">Mật khẩu</label>
+                <input type="password" name="password" class="w-full p-3 border-2 border-slate-200 rounded-lg focus:border-yellow-400 focus:outline-none transition" placeholder="••••••" required>
+            </div>
+            <button type="submit" class="w-full bg-slate-900 text-yellow-400 font-black py-3 rounded-lg hover:bg-slate-800 transition transform active:scale-95 shadow-lg">
+                🚀 ĐĂNG NHẬP
+            </button>
+        </form>
+
+        <% if (error) { %>
+            <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center font-bold mb-4 border border-red-200">⚠️ <%= error %></div>
+        <% } %>
+
+        <hr class="border-slate-200 mb-6">
+
+       <h3 class="text-center font-bold text-slate-400 text-sm mb-4">Hoặc tạo tài khoản mới</h3>
+        <form action="/register" method="POST" class="space-y-3">
+            <input type="text" name="name" placeholder="Họ tên" class="w-full p-2 border rounded bg-slate-50 text-sm" required>
+            
+            <input type="email" name="email" placeholder="Email (Bắt buộc)" class="w-full p-2 border rounded bg-slate-50 text-sm" required>
+            <input type="text" name="username" placeholder="User mới" class="w-full p-2 border rounded bg-slate-50 text-sm" required>
+            <input type="password" name="password" placeholder="Pass mới" class="w-full p-2 border rounded bg-slate-50 text-sm" required>
+            
+            <select name="role" class="w-full p-2 border rounded bg-slate-50 text-sm font-bold text-slate-700 outline-none">
+                <option value="Khách hàng">👤 Khách hàng (User)</option>
+                <option value="Admin">👑 Quản trị viên (Admin)</option>
+            </select>
+
+            <button type="submit" class="w-full bg-gray-200 text-slate-600 font-bold py-2 rounded hover:bg-gray-300 text-sm">
+                ✨ Đăng ký ngay
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>

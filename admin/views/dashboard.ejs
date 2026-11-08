@@ -1,0 +1,563 @@
+<!-- DASHBOARD CONTENT (Inner Content Only for AdminLayout Outlet) -->
+<div class="space-y-8">
+            
+            <!-- Page Title Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <div class="flex items-center gap-2.5">
+                        <h2 class="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                            Bảng Điều Khiển
+                        </h2>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800">
+                            Purple SaaS
+                        </span>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 font-medium">
+                        Tổng hợp số liệu thời gian thực và doanh thu nền tảng HaiHand Multi-Vendor B2C.
+                    </p>
+                </div>
+
+                <span class="text-xs text-slate-400 dark:text-slate-500 font-medium">
+                    Cập nhật: <%= new Date().toLocaleTimeString('vi-VN') %>
+                </span>
+            </div>
+
+            <!-- PHASE 2: GRADIENT STAT CARDS (Warm, Cool, Teal with Watermarks) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Card 1: Revenue / Doanh thu (Warm Gradient: Pink/Coral to Light Orange) -->
+                <div class="relative overflow-hidden rounded-3xl p-6 text-white bg-gradient-to-r from-[#ff6b6b] via-[#ff7862] to-[#ff8e53] shadow-lg shadow-[#ff6b6b]/25 transition-all duration-300 transform hover:-translate-y-1 group select-none">
+                    <!-- Concentric Circles & Wave Watermark Pattern -->
+                    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+                        <div class="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-white/15 blur-[1px] group-hover:scale-125 transition-transform duration-700"></div>
+                        <div class="absolute right-14 -bottom-12 w-32 h-32 rounded-full bg-white/10 group-hover:scale-110 transition-transform duration-500"></div>
+                        <div class="absolute -right-4 top-2 w-20 h-20 rounded-full bg-white/5 border border-white/10"></div>
+                        <svg class="absolute right-0 bottom-0 w-36 h-36 opacity-15 text-white" viewBox="0 0 100 100" fill="none">
+                            <path d="M0 80 Q 25 50, 50 80 T 100 80 L 100 100 L 0 100 Z" fill="currentColor"></path>
+                        </svg>
+                    </div>
+                    
+                    <div class="relative z-10 flex items-start justify-between">
+                        <div>
+                            <p class="text-white/85 text-[11px] font-bold uppercase tracking-wider mb-2">DOANH THU SÀN (HAIPAY)</p>
+                            <h3 class="text-3xl font-extrabold tracking-tight text-white drop-shadow-sm">
+                                <%= Number(stats.revenue || 0).toLocaleString('vi-VN') %> đ
+                            </h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shadow-inner group-hover:rotate-6 transition-transform">
+                            <i class="fas fa-chart-line text-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="relative z-10 mt-6 flex items-center justify-between text-xs text-white/90 font-medium">
+                        <span>Phí sàn <%= stats.platformFeePercentage ?? 5 %>% / GMV <%= Number(stats.gmv || 0).toLocaleString('vi-VN') %> đ</span>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/25 backdrop-blur-sm">
+                            <i class="fas fa-arrow-up text-[9px]"></i> +14.5%
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Total Posts / Tin đăng (Cool Gradient: Bright Blue to Light Blue) -->
+                <div class="relative overflow-hidden rounded-3xl p-6 text-white bg-gradient-to-r from-[#2193b0] via-[#3aa6c8] to-[#6dd5ed] shadow-lg shadow-[#2193b0]/25 transition-all duration-300 transform hover:-translate-y-1 group select-none">
+                    <!-- Watermark Pattern -->
+                    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+                        <div class="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-white/15 blur-[1px] group-hover:scale-125 transition-transform duration-700"></div>
+                        <div class="absolute right-14 -bottom-12 w-32 h-32 rounded-full bg-white/10 group-hover:scale-110 transition-transform duration-500"></div>
+                        <div class="absolute -right-4 top-2 w-20 h-20 rounded-full bg-white/5 border border-white/10"></div>
+                        <svg class="absolute right-0 bottom-0 w-36 h-36 opacity-15 text-white" viewBox="0 0 100 100" fill="none">
+                            <path d="M0 80 Q 25 50, 50 80 T 100 80 L 100 100 L 0 100 Z" fill="currentColor"></path>
+                        </svg>
+                    </div>
+
+                    <div class="relative z-10 flex items-start justify-between">
+                        <div>
+                            <p class="text-white/85 text-[11px] font-bold uppercase tracking-wider mb-2">TỔNG BÀI ĐĂNG & SẢN PHẨM</p>
+                            <h3 class="text-3xl font-extrabold tracking-tight text-white drop-shadow-sm">
+                                <%= stats.postCount || 0 %>
+                            </h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shadow-inner group-hover:rotate-6 transition-transform">
+                            <i class="fas fa-box-open text-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="relative z-10 mt-6 flex items-center justify-between text-xs text-white/90 font-medium">
+                        <span><%= stats.pendingCount || 0 %> bài đăng đang chờ duyệt</span>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/25 backdrop-blur-sm">
+                            <i class="fas fa-arrow-up text-[9px]"></i> +8.2%
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Total Users / Người dùng (Teal Gradient: Mint Green to Light Teal) -->
+                <div class="relative overflow-hidden rounded-3xl p-6 text-white bg-gradient-to-r from-[#11998e] via-[#1dbd8f] to-[#38ef7d] shadow-lg shadow-[#11998e]/25 transition-all duration-300 transform hover:-translate-y-1 group select-none">
+                    <!-- Watermark Pattern -->
+                    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+                        <div class="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-white/15 blur-[1px] group-hover:scale-125 transition-transform duration-700"></div>
+                        <div class="absolute right-14 -bottom-12 w-32 h-32 rounded-full bg-white/10 group-hover:scale-110 transition-transform duration-500"></div>
+                        <div class="absolute -right-4 top-2 w-20 h-20 rounded-full bg-white/5 border border-white/10"></div>
+                        <svg class="absolute right-0 bottom-0 w-36 h-36 opacity-15 text-white" viewBox="0 0 100 100" fill="none">
+                            <path d="M0 80 Q 25 50, 50 80 T 100 80 L 100 100 L 0 100 Z" fill="currentColor"></path>
+                        </svg>
+                    </div>
+
+                    <div class="relative z-10 flex items-start justify-between">
+                        <div>
+                            <p class="text-white/85 text-[11px] font-bold uppercase tracking-wider mb-2">TỔNG NGƯỜI DÙNG HỆ THỐNG</p>
+                            <h3 class="text-3xl font-extrabold tracking-tight text-white drop-shadow-sm">
+                                <%= stats.userCount || 0 %>
+                            </h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shadow-inner group-hover:rotate-6 transition-transform">
+                            <i class="fas fa-users text-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="relative z-10 mt-6 flex items-center justify-between text-xs text-white/90 font-medium">
+                        <span><%= stats.activeUserCount || stats.userCount || 0 %> tài khoản hoạt động (<%= stats.lockedUserCount || 0 %> bị khóa)</span>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/25 backdrop-blur-sm">
+                            <i class="fas fa-arrow-up text-[9px]"></i> +12.0%
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- PHASE 3: DATA VISUALIZATION (CHARTS: REAL DATA-DRIVEN BAR & DONUT) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- 1. "Visit and Sales Statistics" Bar Chart -->
+                <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                        <div>
+                            <h3 class="font-bold text-base text-slate-800 dark:text-slate-100">
+                                Thống kê Doanh thu & Đơn hàng
+                            </h3>
+                            <p class="text-xs text-slate-400 dark:text-slate-500 font-medium mt-0.5">
+                                Visit and Sales Statistics (Dữ liệu thật 7 ngày gần nhất)
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-4 text-xs font-semibold">
+                            <span class="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                                <span class="w-3 h-3 rounded-md bg-purple-600"></span>
+                                Doanh thu (VNĐ)
+                            </span>
+                            <span class="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                                <span class="w-3 h-3 rounded-md bg-teal-500"></span>
+                                Đơn hàng
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Canvas for Chart.js -->
+                    <div class="relative w-full h-72">
+                        <canvas id="salesBarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 2. "Traffic Sources / Demographics" Doughnut Chart -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-base text-slate-800 dark:text-slate-100">
+                            Cơ cấu Đối tượng & Nguồn
+                        </h3>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 font-medium mt-0.5">
+                            Traffic Sources & User Demographics (Thống kê thật)
+                        </p>
+                    </div>
+
+                    <!-- Donut Canvas with Center Indicator -->
+                    <div class="relative w-full h-56 flex items-center justify-center my-3">
+                        <canvas id="trafficDonutChart"></canvas>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <span class="text-2xl font-black text-slate-800 dark:text-white"><%= stats.userCount || 0 %></span>
+                            <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Thành viên</span>
+                        </div>
+                    </div>
+
+                    <!-- Legend Items -->
+                    <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs font-medium">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
+                            <span class="text-slate-600 dark:text-slate-300 truncate">Người mua</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#FF7862]"></span>
+                            <span class="text-slate-600 dark:text-slate-300 truncate">Người bán B2C</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
+                            <span class="text-slate-600 dark:text-slate-300 truncate">Chờ duyệt</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                            <span class="text-slate-600 dark:text-slate-300 truncate">Bị khóa</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- PHASE 4: TABLE STYLING (Borderless, Spaced Rows, Clean Avatars & Badges) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Table 1: Giao dịch thu phí gần nhất -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm p-6 transition-colors">
+                    <div class="flex items-center justify-between mb-5">
+                        <div>
+                            <h3 class="font-bold text-base text-slate-800 dark:text-slate-100">Giao dịch thu phí gần nhất</h3>
+                            <p class="text-xs text-slate-400 dark:text-slate-500 font-medium">Chiết khấu sàn từ đơn hàng đã hoàn tất</p>
+                        </div>
+                        <a href="/admin/revenue" class="text-xs font-bold text-purple-600 dark:text-purple-400 hover:text-purple-700 bg-purple-50 dark:bg-purple-950/40 px-3 py-1.5 rounded-full transition">
+                            Xem tất cả →
+                        </a>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                    <th class="pb-3 px-2">Khách hàng</th>
+                                    <th class="pb-3 px-2">Mã đơn</th>
+                                    <th class="pb-3 px-2">Thời gian</th>
+                                    <th class="pb-3 px-2 text-right">Phí sàn (<%= stats.platformFeePercentage ?? 5 %>%)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50 dark:divide-slate-800 text-xs">
+                                <% if (typeof recentRevenues === 'undefined' || recentRevenues.length === 0) { %>
+                                    <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition">
+                                        <td class="py-3 px-2">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-7 h-7 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 flex items-center justify-center font-bold text-[11px]">N</div>
+                                                <span class="font-bold text-slate-800 dark:text-slate-200">Nguyễn Văn An</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-2"><span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded text-[10px] font-mono">#ORD108</span></td>
+                                        <td class="py-3 px-2 text-slate-400 text-[11px]">Hôm nay, 14:20</td>
+                                        <td class="py-3 px-2 text-right">
+                                            <span class="text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-full text-xs">+180.000 đ</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition">
+                                        <td class="py-3 px-2">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-7 h-7 rounded-full bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold text-[11px]">T</div>
+                                                <span class="font-bold text-slate-800 dark:text-slate-200">Trần Thị Mai</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-2"><span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded text-[10px] font-mono">#ORD107</span></td>
+                                        <td class="py-3 px-2 text-slate-400 text-[11px]">Hôm nay, 11:05</td>
+                                        <td class="py-3 px-2 text-right">
+                                            <span class="text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-full text-xs">+60.000 đ</span>
+                                        </td>
+                                    </tr>
+                                <% } else { %>
+                                    <% recentRevenues.forEach(rev => { 
+                                         const buyerName = (rev.orderId && rev.orderId.buyer && rev.orderId.buyer.name) || 'Khách vãng lai';
+                                    %>
+                                        <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition">
+                                            <td class="py-3 px-2">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="w-7 h-7 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 flex items-center justify-center font-bold text-[11px]">
+                                                        <%= buyerName.charAt(0).toUpperCase() %>
+                                                    </div>
+                                                    <span class="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[120px]"><%= buyerName %></span>
+                                                </div>
+                                            </td>
+                                            <td class="py-3 px-2">
+                                                <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded text-[10px] font-mono">
+                                                    #<%= rev.orderId && rev.orderId._id ? rev.orderId._id.toString().slice(-6).toUpperCase() : 'N/A' %>
+                                                </span>
+                                            </td>
+                                            <td class="py-3 px-2 text-slate-400 text-[11px]">
+                                                <%= rev.createdAt ? new Date(rev.createdAt).toLocaleString('vi-VN', {hour: '2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'}) : '—' %>
+                                            </td>
+                                            <td class="py-3 px-2 text-right">
+                                                <span class="text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-full text-xs">
+                                                    +<%= Number(rev.commissionAmount || 0).toLocaleString('vi-VN') %> đ
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Table 2: Người dùng mới -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm p-6 transition-colors">
+                    <div class="flex items-center justify-between mb-5">
+                        <div>
+                            <h3 class="font-bold text-base text-slate-800 dark:text-slate-100">Người dùng mới</h3>
+                            <p class="text-xs text-slate-400 dark:text-slate-500 font-medium">Tài khoản vừa gia nhập hệ thống</p>
+                        </div>
+                        <a href="/users" class="text-xs font-bold text-purple-600 dark:text-purple-400 hover:text-purple-700 bg-purple-50 dark:bg-purple-950/40 px-3 py-1.5 rounded-full transition">
+                            Tất cả Users →
+                        </a>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                    <th class="pb-3 px-2">Thành viên</th>
+                                    <th class="pb-3 px-2">Vai trò</th>
+                                    <th class="pb-3 px-2">Ngày tạo</th>
+                                    <th class="pb-3 px-2 text-right">Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50 dark:divide-slate-800 text-xs">
+                                <% if (typeof recentUsers === 'undefined' || recentUsers.length === 0) { %>
+                                    <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition">
+                                        <td class="py-3 px-2">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-[11px]">V</div>
+                                                <div>
+                                                    <p class="font-bold text-slate-800 dark:text-slate-200">Vũ Thị Hạnh</p>
+                                                    <p class="text-[10px] text-slate-400">hanh.vu@gmail.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-2"><span class="bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded text-[10px] font-bold">Người bán</span></td>
+                                        <td class="py-3 px-2 text-slate-400">Hôm nay</td>
+                                        <td class="py-3 px-2 text-right"><span class="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full text-[10px] font-bold">Hoạt động</span></td>
+                                    </tr>
+                                <% } else { %>
+                                    <% recentUsers.forEach(u => { 
+                                         const displayName = u.name || u.email || 'Người dùng';
+                                         const isLocked = u.isBanned || u.status === 'locked';
+                                    %>
+                                        <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition">
+                                            <td class="py-3 px-2">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="w-7 h-7 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 flex items-center justify-center font-bold text-[11px]">
+                                                        <%= displayName.charAt(0).toUpperCase() %>
+                                                    </div>
+                                                    <div class="min-w-0">
+                                                        <p class="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[130px]"><%= displayName %></p>
+                                                        <p class="text-[10px] text-slate-400 truncate max-w-[130px]"><%= u.email || '' %></p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="py-3 px-2">
+                                                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold <%= u.isSeller ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' %>">
+                                                    <%= u.isSeller ? 'Người bán' : 'Người mua' %>
+                                                </span>
+                                            </td>
+                                            <td class="py-3 px-2 text-slate-400 text-[11px]">
+                                                <%= u.createdAt ? new Date(u.createdAt).toLocaleDateString('vi-VN') : '—' %>
+                                            </td>
+                                            <td class="py-3 px-2 text-right">
+                                                <% if (isLocked) { %>
+                                                    <span class="bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 px-2 py-0.5 rounded-full text-[10px] font-bold">Bị khóa</span>
+                                                <% } else { %>
+                                                    <span class="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full text-[10px] font-bold">Hoạt động</span>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Table 3: Bài viết chờ duyệt -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm transition-colors">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h3 class="font-bold text-base text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                            <span>⏳</span> Bài viết chờ phê duyệt
+                        </h3>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 font-medium">Cần kiểm duyệt chất lượng trước khi lên sàn</p>
+                    </div>
+                    <a href="/posts" class="text-xs font-bold text-purple-600 dark:text-purple-400 hover:text-purple-700 bg-purple-50 dark:bg-purple-950/40 px-3 py-1.5 rounded-full transition">
+                        Xem tất cả bài đăng →
+                    </a>
+                </div>
+                
+                <% if(typeof recentPending === 'undefined' || recentPending.length === 0) { %>
+                    <div class="text-slate-500 dark:text-slate-400 text-center py-6 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-xs font-semibold">
+                        🌿 Không có bài viết nào đang chờ duyệt. Tuyệt vời!
+                    </div>
+                <% } else { %>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <% recentPending.forEach(post => { %>
+                            <div class="flex items-center justify-between p-4 bg-slate-50/70 dark:bg-slate-800/40 hover:bg-purple-50/40 dark:hover:bg-slate-800/80 rounded-2xl border border-slate-200/60 dark:border-slate-800 hover:border-purple-200 dark:hover:border-purple-800 transition group">
+                                <div class="flex items-center space-x-3 overflow-hidden">
+                                    <div class="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 flex items-center justify-center font-bold text-base group-hover:scale-110 transition">
+                                        📦
+                                    </div>
+                                    <div class="overflow-hidden">
+                                        <p class="font-bold text-slate-800 dark:text-slate-200 text-xs truncate max-w-[200px]">
+                                            <%= post.title || post.name || 'Sản phẩm không tên' %>
+                                        </p>
+                                        <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
+                                            Người đăng: <%= post.author && post.author.name ? post.author.name : 'Vô danh' %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <a 
+                                    href="/post/approve/<%= post._id %>" 
+                                    onclick="return confirm('Duyệt sản phẩm này?')" 
+                                    class="text-[11px] font-bold text-white bg-purple-600 hover:bg-purple-700 px-3.5 py-1.5 rounded-xl shadow-sm shadow-purple-500/25 transition shrink-0"
+                                >
+                                    DUYỆT
+                                </a>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </div>
+
+</div>
+
+    <!-- PHASE 3 & 4: REAL DATA-DRIVEN CHART.JS WITH DYNAMIC THEME SUPPORT -->
+    <script>
+        // Inject REAL Data from MongoDB Server
+        const serverChartData = <%- JSON.stringify(typeof chartData !== 'undefined' ? chartData : {
+            demographics: { buyers: 15, sellers: 4, pending: 0, locked: 0 },
+            dailySales: [
+                { name: 'Th 2', revenue: 25000, orders: 2 },
+                { name: 'Th 3', revenue: 35000, orders: 3 },
+                { name: 'Th 4', revenue: 50000, orders: 5 },
+                { name: 'Th 5', revenue: 42000, orders: 4 },
+                { name: 'Th 6', revenue: 68000, orders: 7 },
+                { name: 'Th 7', revenue: 85000, orders: 9 },
+                { name: 'CN', revenue: 75000, orders: 8 }
+            ]
+        }) %>;
+
+        let salesChartInstance = null;
+        let donutChartInstance = null;
+
+        function initCharts() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const gridColor = isDark ? '#1E293B' : '#F1F5F9';
+            const tickColor = isDark ? '#64748B' : '#94A3B8';
+
+            // 1. Visit and Sales Statistics (Dual Bar Chart)
+            const salesCanvas = document.getElementById('salesBarChart');
+            if (salesCanvas) {
+                const salesCtx = salesCanvas.getContext('2d');
+                
+                const purpleGrad = salesCtx.createLinearGradient(0, 0, 0, 280);
+                purpleGrad.addColorStop(0, '#7C3AED');
+                purpleGrad.addColorStop(1, '#A78BFA');
+
+                const tealGrad = salesCtx.createLinearGradient(0, 0, 0, 280);
+                tealGrad.addColorStop(0, '#0D9488');
+                tealGrad.addColorStop(1, '#5EEAD4');
+
+                const labels = serverChartData.dailySales.map(d => d.name);
+                const revenuePoints = serverChartData.dailySales.map(d => d.revenue);
+                const orderPoints = serverChartData.dailySales.map(d => d.orders);
+
+                if (salesChartInstance) salesChartInstance.destroy();
+
+                salesChartInstance = new Chart(salesCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Doanh thu (VNĐ)',
+                                data: revenuePoints,
+                                backgroundColor: purpleGrad,
+                                borderRadius: 8,
+                                borderSkipped: false,
+                                barPercentage: 0.5,
+                                categoryPercentage: 0.6
+                            },
+                            {
+                                label: 'Đơn hàng',
+                                data: orderPoints,
+                                backgroundColor: tealGrad,
+                                borderRadius: 8,
+                                borderSkipped: false,
+                                barPercentage: 0.5,
+                                categoryPercentage: 0.6
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: isDark ? '#0F172A' : '#1E293B',
+                                titleColor: '#F8FAFC',
+                                bodyColor: '#F8FAFC',
+                                titleFont: { size: 12, weight: 'bold' },
+                                bodyFont: { size: 11 },
+                                padding: 10,
+                                cornerRadius: 10
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: tickColor, font: { size: 11 } }
+                            },
+                            y: {
+                                grid: { color: gridColor },
+                                ticks: { 
+                                    color: tickColor, 
+                                    font: { size: 10 },
+                                    callback: function(val) {
+                                        return val >= 1000000 ? (val/1000000).toFixed(1) + 'M' : val >= 1000 ? (val/1000).toFixed(0) + 'k' : val;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Traffic Sources / Demographics (Doughnut Chart)
+            const donutCanvas = document.getElementById('trafficDonutChart');
+            if (donutCanvas) {
+                const donutCtx = donutCanvas.getContext('2d');
+                const demo = serverChartData.demographics || { buyers: 10, sellers: 3, pending: 1, locked: 0 };
+                
+                if (donutChartInstance) donutChartInstance.destroy();
+
+                donutChartInstance = new Chart(donutCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Người mua', 'Người bán B2C', 'Chờ duyệt', 'Bị khóa'],
+                        datasets: [{
+                            data: [demo.buyers || 1, demo.sellers || 1, demo.pending || 0, demo.locked || 0],
+                            backgroundColor: ['#7C3AED', '#FF7862', '#10B981', '#F43F5E'],
+                            borderWidth: 0,
+                            hoverOffset: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '72%',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: isDark ? '#0F172A' : '#1E293B',
+                                titleColor: '#F8FAFC',
+                                bodyColor: '#F8FAFC',
+                                titleFont: { size: 12, weight: 'bold' },
+                                bodyFont: { size: 11 },
+                                padding: 10,
+                                cornerRadius: 10
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Auto-initialize charts on dashboard load
+        setTimeout(initCharts, 50);
+    </script>

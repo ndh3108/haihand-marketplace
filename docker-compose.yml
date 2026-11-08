@@ -1,0 +1,83 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: haihand-backend
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      PORT: 4000
+      NODE_ENV: development
+      LM_STUDIO_URL: ${LM_STUDIO_DOCKER_URL:-http://host.docker.internal:1235/v1}
+      AI_MODEL: ${AI_MODEL:-qwen3-vl-4b-instruct}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-bge-m3}
+      VECTOR_INDEX_NAME: ${VECTOR_INDEX_NAME:-product_vector_index}
+      IMAGE_VECTOR_INDEX_NAME: ${IMAGE_VECTOR_INDEX_NAME:-product_image_vector_index}
+      IMAGE_EMBEDDING_MODEL: ${IMAGE_EMBEDDING_MODEL:-Xenova/siglip-base-patch16-224}
+      IMAGE_EMBEDDING_DTYPE: ${IMAGE_EMBEDDING_DTYPE:-q8}
+      SIGLIP_CACHE_DIR: /app/.cache/huggingface
+      RAG_INDEX_IMAGES: ${RAG_INDEX_IMAGES:-true}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - siglip-cache:/app/.cache/huggingface
+    networks:
+      - haihand-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: haihand-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - HOST=0.0.0.0
+      - REACT_APP_API_URL=http://localhost:4000
+      - WDS_SOCKET_PORT=0
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - haihand-network
+
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: haihand-admin
+    restart: unless-stopped
+    ports:
+      - "4001:4001"
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      - PORT=4001
+      - HOST=0.0.0.0
+      - WDS_SOCKET_PORT=0
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    networks:
+      - haihand-network
+
+networks:
+  haihand-network:
+    driver: bridge
+
+volumes:
+  siglip-cache:

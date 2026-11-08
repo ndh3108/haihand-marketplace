@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof pageTitle !== 'undefined' ? pageTitle : 'HaiHand Admin Portal' %></title>
+    
+    <!-- Instant Dark Mode Detection Script (Prevents flash of white) -->
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('adminTheme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            } catch(e) {}
+        })();
+    </script>
+
+    <!-- Tailwind CSS CDN with dark mode: 'class' configured -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#090D16',
+                        darkCard: '#111827',
+                        darkBorder: '#1F2937'
+                    }
+                }
+            }
+        };
+    </script>
+
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <!-- Chart.js for Data Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Socket.io Client for Real-time System Notifications -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; }
+
+        /* Smooth SPA Page Transition */
+        #admin-outlet {
+            animation: fadeInOutlet 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeInOutlet {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Turbo Navigation Progress Bar */
+        #spa-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #7C3AED, #A78BFA, #38BDF8);
+            z-index: 9999;
+            transition: width 0.2s ease, opacity 0.3s ease;
+            width: 0%;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] dark:bg-[#090D16] flex min-h-screen text-slate-800 dark:text-slate-100 antialiased transition-colors duration-200">
+    
+    <!-- Top SPA Loading Progress Indicator -->
+    <div id="spa-progress-bar"></div>
+
+    <!-- 1. STATIC SIDEBAR COMPONENT (Left Side) -->
+    <%- include('../partials/sidebar', { active: typeof active !== 'undefined' ? active : 'dashboard' }) %>
+
+    <!-- 2. MAIN CONTENT WRAPPER (Right Side) -->
+    <div id="mainContentContainer" class="flex-1 min-h-screen flex flex-col ml-0 lg:ml-64 overflow-y-auto transition-all duration-300">
+        
+        <!-- 3. STATIC HEADER (Top Navbar) -->
+        <%- include('../partials/header') %>
+
+        <!-- 4. DYNAMIC OUTLET (Where Inner Content Swaps Smoothly) -->
+        <main class="p-6 sm:p-8 space-y-8 flex-1" id="admin-outlet">
+            <%- body %>
+        </main>
+
+        <!-- 5. STATIC FOOTER (Bottom SaaS Footer) -->
+        <%- include('../partials/footer') %>
+
+    </div>
+
+    <!-- GLOBAL CLIENT-SIDE SPA ROUTING & THEME PERSISTENCE ENGINE -->
+    <script>
+        // Global Theme Switcher Logic
+        window.updateThemeUI = function() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const icon = document.getElementById('themeToggleIcon');
+            if (icon) {
+                icon.className = isDark ? 'fas fa-sun text-sm text-amber-400' : 'fas fa-moon text-sm text-slate-600';
+            }
+        };
+
+        window.toggleTheme = function() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            try {
+                localStorage.setItem('adminTheme', isDark ? 'dark' : 'light');
+            } catch(e) {}
+            window.updateThemeUI();
+            if (typeof initCharts === 'function') initCharts();
+        };
+
+        // Client-Side Nested Routing Navigation Engine (Simulates React <Outlet /> without reload)
+        window.spaNavigate = async function(url, pushState = true) {
+            const progressBar = document.getElementById('spa-progress-bar');
+            const outlet = document.getElementById('admin-outlet');
+            
+            try {
+                if (progressBar) {
+                    progressBar.style.opacity = '1';
+                    progressBar.style.width = '30%';
+                }
+
+                const response = await fetch(url, {
+                    headers: { 'X-Requested-With': 'SPA-Fetch' }
+                });
+
+                if (progressBar) progressBar.style.width = '70%';
+
+                if (!response.ok) {
+                    window.location.href = url;
+                    return;
+                }
+
+                const htmlText = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+
+                const newOutlet = doc.getElementById('admin-outlet');
+                if (newOutlet && outlet) {
+                    // Update document title if present
+                    if (doc.title) document.title = doc.title;
+
+                    // Swap outlet content smoothly
+                    outlet.innerHTML = newOutlet.innerHTML;
+
+                    // Re-execute any scripts contained inside the new outlet
+                    const scripts = outlet.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    // Update URL in browser address bar without hard reload
+                    if (pushState) {
+                        history.pushState({ url }, '', url);
+                    }
+
+                    // Update active links in sidebar
+                    window.updateActiveSidebar(url);
+
+                    // Re-initialize charts if on dashboard
+                    if (typeof initCharts === 'function') {
+                        setTimeout(initCharts, 50);
+                    }
+
+                    // Scroll main container to top smoothly
+                    const mainContainer = document.getElementById('mainContentContainer');
+                    if (mainContainer) mainContainer.scrollTop = 0;
+                } else {
+                    // Fallback to regular navigation if outlet not found
+                    window.location.href = url;
+                }
+            } catch(err) {
+                console.warn('SPA Navigation fallback:', err);
+                window.location.href = url;
+            } finally {
+                if (progressBar) {
+                    progressBar.style.width = '100%';
+                    setTimeout(() => {
+                        progressBar.style.opacity = '0';
+                        progressBar.style.width = '0%';
+                    }, 250);
+                }
+            }
+        };
+
+        // Update Active Sidebar Link Highlighting
+        window.updateActiveSidebar = function(currentUrl) {
+            const path = new URL(currentUrl, window.location.origin).pathname;
+            document.querySelectorAll('#admin-sidebar a').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && (href === path || (path === '/' && href === '/dashboard'))) {
+                    link.classList.add('bg-purple-100', 'dark:bg-purple-900/40', 'text-purple-700', 'dark:text-purple-300', 'font-bold');
+                } else if (href && !href.startsWith('http') && href !== '#') {
+                    link.classList.remove('bg-purple-100', 'dark:bg-purple-900/40', 'text-purple-700', 'dark:text-purple-300', 'font-bold');
+                }
+            });
+        };
+
+        // Intercept internal link clicks to route through SPA Navigation Engine
+        document.addEventListener('click', function(e) {
+            const anchor = e.target.closest('a');
+            if (!anchor) return;
+
+            const href = anchor.getAttribute('href');
+            if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('http') || anchor.hasAttribute('download') || anchor.getAttribute('target') === '_blank') {
+                return;
+            }
+
+            // Don't intercept logout or delete actions
+            if (href.includes('/logout') || href.includes('/delete') || anchor.hasAttribute('onclick')) {
+                return;
+            }
+
+            e.preventDefault();
+            window.spaNavigate(href);
+        });
+
+        // Handle Browser Back / Forward buttons
+        window.addEventListener('popstate', function(e) {
+            window.spaNavigate(window.location.pathname, false);
+        });
+
+        // Initialize Theme & charts on initial page load
+        document.addEventListener('DOMContentLoaded', function() {
+            window.updateThemeUI();
+            if (typeof initCharts === 'function') initCharts();
+        });
+    </script>
+</body>
+</html>

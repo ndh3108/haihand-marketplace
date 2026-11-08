@@ -1,0 +1,223 @@
+<!-- USER MANAGEMENT VIEW (Inner Content Only for AdminLayout Outlet) -->
+<div class="space-y-6">
+    
+    <!-- Top Action Bar & Title -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-2.5">
+                <h2 class="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                    👥 Quản Lý Người Dùng
+                </h2>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800">
+                    <%= typeof users !== 'undefined' ? users.length : 0 %> Tài khoản
+                </span>
+            </div>
+            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 font-medium">
+                Quản trị danh sách người dùng, khách mua hàng, người bán và phân quyền hệ thống.
+            </p>
+        </div>
+        
+        <!-- Live Search Box with Dark Mode Support -->
+        <div class="relative w-full sm:w-80">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 dark:text-slate-500">
+                <i class="fas fa-search text-xs"></i>
+            </span>
+            <input 
+                type="text" 
+                id="userSearch" 
+                onkeyup="filterUsers()" 
+                placeholder="Tìm tên, email, số điện thoại..." 
+                class="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs font-medium rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-4 focus:ring-purple-500/15 outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500 shadow-sm"
+            />
+        </div>
+    </div>
+
+    <!-- User Table Card with Full Light / Dark Mode Adaptation -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 overflow-hidden transition-colors duration-200">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse" id="userTable">
+                <thead>
+                    <tr class="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase text-[11px] tracking-wider">
+                        <th class="py-4 px-6">Họ tên & Tài khoản</th>
+                        <th class="py-4 px-6">Thông tin liên hệ</th>
+                        <th class="py-4 px-6">Vai trò & Trạng thái</th>
+                        <th class="py-4 px-6">Ngày tham gia</th>
+                        <th class="py-4 px-6 text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                    <% if (typeof users !== 'undefined' && users.length > 0) { %>
+                        <% users.forEach(user => { %>
+                        <tr class="hover:bg-purple-50/40 dark:hover:bg-slate-800/50 transition-colors user-row group">
+                            <!-- Name & Avatar -->
+                            <td class="py-4 px-6">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr <%= user.role === 'Admin' ? 'from-purple-600 to-indigo-600' : (user.isSeller ? 'from-amber-500 to-orange-500' : 'from-blue-500 to-cyan-500') %> text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
+                                        <%= (user.name || 'U').charAt(0).toUpperCase() %>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-800 dark:text-slate-100 text-sm group-hover:text-purple-600 dark:group-hover:text-purple-400 transition leading-tight">
+                                            <%= user.name %>
+                                        </p>
+                                        <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-mono">
+                                            ID: #<%= user._id.toString().slice(-6).toUpperCase() %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Contact -->
+                            <td class="py-4 px-6">
+                                <div class="text-slate-600 dark:text-slate-300 space-y-1">
+                                    <div class="flex items-center gap-1.5">
+                                        <i class="far fa-envelope text-[10px] text-slate-400"></i>
+                                        <span><%= user.email %></span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+                                        <i class="fas fa-phone-alt text-[10px] text-slate-400"></i>
+                                        <span><%= user.phone || 'Chưa cập nhật SĐT' %></span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Role & Seller status -->
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <% if(user.role === 'Admin') { %>
+                                        <span class="bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800 px-2.5 py-1 rounded-full text-[10px] font-bold">
+                                            👑 Admin
+                                        </span>
+                                    <% } else if (user.isSeller) { %>
+                                        <span class="bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800 px-2.5 py-1 rounded-full text-[10px] font-bold">
+                                            🏪 Người bán B2C
+                                        </span>
+                                    <% } else { %>
+                                        <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700 px-2.5 py-1 rounded-full text-[10px] font-bold">
+                                            👤 Khách hàng
+                                        </span>
+                                    <% } %>
+
+                                    <span id="user-status-badge-<%= user._id %>">
+                                        <% if (user.isBanned || user.status === 'locked') { %>
+                                            <span class="bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                                                🔒 Bị khóa
+                                            </span>
+                                        <% } else { %>
+                                            <span class="bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                                                ✓ Hoạt động
+                                            </span>
+                                        <% } %>
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- Date joined -->
+                            <td class="py-4 px-6 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+                                <%= new Date(user.createdAt || user.date || Date.now()).toLocaleDateString('vi-VN') %>
+                            </td>
+
+                            <!-- Actions -->
+                            <td class="py-4 px-6 text-center space-x-1.5 whitespace-nowrap">
+                                <a 
+                                    href="/users/edit/<%= user._id %>" 
+                                    class="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200/60 dark:border-blue-800/60 px-3 py-1.5 rounded-xl font-bold transition text-xs"
+                                >
+                                    <i class="fas fa-edit text-[10px]"></i>
+                                    <span>Sửa</span>
+                                </a>
+                                <% const isLocked = user.isBanned || user.status === 'locked'; %>
+                                <button 
+                                    type="button"
+                                    id="user-lock-btn-<%= user._id %>"
+                                    onclick="toggleLockUser('<%= user._id %>')" 
+                                    class="inline-flex items-center gap-1 <%= isLocked ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/60 border-amber-200/60 dark:border-amber-800/60' : 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 border-rose-200/60 dark:border-rose-800/60' %> border px-3 py-1.5 rounded-xl font-bold transition text-xs cursor-pointer"
+                                >
+                                    <i class="fas <%= isLocked ? 'fa-unlock' : 'fa-lock' %> text-[10px]"></i>
+                                    <span><%= isLocked ? 'Mở khóa' : 'Khóa' %></span>
+                                </button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5" class="py-12 text-center text-slate-400 dark:text-slate-500 italic">
+                                Chưa có dữ liệu người dùng nào trong hệ thống.
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="noResults" class="hidden text-center py-12">
+            <div class="text-4xl mb-2">🔍</div>
+            <p class="text-slate-500 dark:text-slate-400 font-medium">Không tìm thấy người dùng nào phù hợp với từ khóa!</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- Client-Side Instant Search Filter & Lock/Unlock Toggle Script -->
+<script>
+    function filterUsers() {
+        const input = document.getElementById("userSearch").value.toLowerCase();
+        const rows = document.querySelectorAll(".user-row");
+        let hasData = false;
+        
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            if (text.includes(input)) {
+                row.style.display = "";
+                hasData = true;
+            } else {
+                row.style.display = "none";
+            }
+        });
+        if (hasData || rows.length === 0) {
+            document.getElementById("noResults").classList.add("hidden");
+            document.getElementById("userTable").classList.remove("hidden");
+        } else {
+            document.getElementById("noResults").classList.remove("hidden");
+            document.getElementById("userTable").classList.add("hidden");
+        }
+    }
+
+    async function toggleLockUser(userId) {
+        const btn = document.getElementById(`user-lock-btn-${userId}`);
+        const badgeContainer = document.getElementById(`user-status-badge-${userId}`);
+        
+        try {
+            if (btn) btn.disabled = true;
+            const res = await fetch(`/api/admin/users/toggle-lock/${userId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await res.json();
+            if (data.success) {
+                const isLocked = data.isLocked;
+                // Update badge immediately
+                if (badgeContainer) {
+                    badgeContainer.innerHTML = isLocked
+                        ? `<span class="bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800 px-2 py-0.5 rounded-full text-[10px] font-bold">🔒 Bị khóa</span>`
+                        : `<span class="bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800 px-2 py-0.5 rounded-full text-[10px] font-bold">✓ Hoạt động</span>`;
+                }
+                // Update button immediately
+                if (btn) {
+                    if (isLocked) {
+                        btn.className = "inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200/60 dark:border-amber-800/60 px-3 py-1.5 rounded-xl font-bold transition text-xs cursor-pointer";
+                        btn.innerHTML = `<i class="fas fa-unlock text-[10px]"></i><span>Mở khóa</span>`;
+                    } else {
+                        btn.className = "inline-flex items-center gap-1 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200/60 dark:border-rose-800/60 px-3 py-1.5 rounded-xl font-bold transition text-xs cursor-pointer";
+                        btn.innerHTML = `<i class="fas fa-lock text-[10px]"></i><span>Khóa</span>`;
+                    }
+                }
+            } else {
+                alert(data.message || 'Không thể cập nhật trạng thái');
+            }
+        } catch (e) {
+            console.error('Lỗi khi khóa/mở khóa người dùng:', e);
+        } finally {
+            if (btn) btn.disabled = false;
+        }
+    }
+</script>

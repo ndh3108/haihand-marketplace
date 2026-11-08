@@ -1,0 +1,89 @@
+<!-- EDIT CATEGORY VIEW (Inner Content Only for AdminLayout Outlet) -->
+<div class="space-y-6 max-w-2xl mx-auto">
+    
+    <!-- Title & Back Navigation -->
+    <div class="flex items-center justify-between">
+        <div>
+            <div class="flex items-center gap-2.5">
+                <h2 class="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                    ✏️ Sửa Danh Mục
+                </h2>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800">
+                    <%= category.name %>
+                </span>
+            </div>
+            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 font-medium">
+                Cập nhật tên danh mục, mô tả hoặc thay đổi icon nhận diện.
+            </p>
+        </div>
+        <a href="/categories" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-700/80 transition text-xs font-bold">
+            <i class="fas fa-arrow-left text-[10px]"></i>
+            <span>Quay lại</span>
+        </a>
+    </div>
+
+    <!-- Edit Form Card -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 overflow-hidden transition-colors duration-200">
+        <div class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold p-5 flex items-center justify-between">
+            <span class="text-sm font-extrabold">Cập nhật thông tin danh mục</span>
+            <span class="text-xs opacity-75">#<%= category._id.toString().slice(-6).toUpperCase() %></span>
+        </div>
+        <div class="p-6">
+            <form action="/categories/edit/<%= category._id %>" method="POST" enctype="multipart/form-data" class="space-y-4">
+                
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 text-xs mb-1.5">Tên danh mục <span class="text-rose-500">*</span></label>
+                    <input 
+                        type="text" 
+                        class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-4 focus:ring-purple-500/15 outline-none transition" 
+                        name="name" 
+                        value="<%= category.name %>" 
+                        required 
+                    />
+                </div>
+                
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 text-xs mb-1.5">Mô tả danh mục</label>
+                    <textarea 
+                        class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-4 focus:ring-purple-500/15 outline-none transition" 
+                        name="description" 
+                        rows="3"
+                    ><%= category.description || '' %></textarea>
+                </div>
+
+                <div class="border-t border-slate-100 dark:border-slate-800 pt-4">
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 text-xs mb-2">Icon ảnh hiện tại</label>
+                    <div class="mb-3">
+                        <% 
+                            let imgSrc = 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';
+                            if (category.image) {
+                                imgSrc = category.image.startsWith('http') ? category.image : '/uploads/' + category.image;
+                            }
+                        %>
+                        <img src="<%= imgSrc %>" 
+                             onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'" 
+                             class="w-16 h-16 object-cover rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700" 
+                             alt="Icon danh mục" />
+                    </div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 text-xs mb-1.5">Tải icon mới <span class="text-[10px] text-slate-400 dark:text-slate-500 font-normal">(Bỏ trống nếu muốn giữ nguyên ảnh cũ)</span></label>
+                    <input 
+                        type="file" 
+                        class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-50 dark:file:bg-purple-950/60 file:text-purple-700 dark:file:text-purple-300 hover:file:bg-purple-100 transition" 
+                        name="image" 
+                        accept="image/*" 
+                    />
+                </div>
+
+                <div class="pt-2 flex gap-3">
+                    <a href="/categories" class="w-1/3 text-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold py-3 rounded-2xl transition text-xs">
+                        Hủy
+                    </a>
+                    <button type="submit" class="w-2/3 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-2xl shadow-md shadow-purple-500/25 transition text-xs">
+                        💾 Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

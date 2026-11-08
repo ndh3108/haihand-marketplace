@@ -1,0 +1,222 @@
+<!-- ORDERS VIEW (Inner Content Only for AdminLayout Outlet) -->
+<div class="space-y-6">
+    
+    <!-- Title & Search Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-2.5">
+                <h2 class="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                    🛍️ Quản Lý Đơn Hàng
+                </h2>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800">
+                    <%= typeof orders !== 'undefined' ? orders.length : 0 %> Đơn hàng
+                </span>
+            </div>
+            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 font-medium">
+                Theo dõi quy trình giao dịch, trạng thái thanh toán và giải ngân qua ví HaiPay.
+            </p>
+        </div>
+
+        <div class="relative w-full sm:w-80">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 dark:text-slate-500">
+                <i class="fas fa-search text-xs"></i>
+            </span>
+            <input 
+                type="text" 
+                id="orderSearch" 
+                onkeyup="filterOrders()" 
+                placeholder="Tìm mã đơn hoặc tên khách..." 
+                class="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs font-medium rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-4 focus:ring-purple-500/15 outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500 shadow-sm"
+            />
+        </div>
+    </div>
+
+    <!-- Orders Table Card with Full Light / Dark Mode Adaptation -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 overflow-hidden transition-colors duration-200">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse" id="ordersTable">
+                <thead>
+                    <tr class="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase text-[11px] tracking-wider">
+                        <th class="px-6 py-4">Mã đơn</th>
+                        <th class="px-6 py-4">Khách hàng</th>
+                        <th class="px-6 py-4">Ngày đặt</th>
+                        <th class="px-6 py-4 text-right">Tổng tiền</th>
+                        <th class="px-6 py-4 text-center">Trạng thái</th>
+                        <th class="px-6 py-4 text-center">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                    <% if(typeof orders !== 'undefined' && orders && orders.length > 0) { %>
+                        <% orders.forEach(order => { %>
+                        <tr class="hover:bg-purple-50/40 dark:hover:bg-slate-800/50 transition-colors order-row group">
+                            <!-- Order ID -->
+                            <td class="px-6 py-4 font-mono font-bold text-purple-600 dark:text-purple-400">
+                                #<%= order._id.toString().slice(-6).toUpperCase() %>
+                            </td>
+
+                            <!-- Buyer Info -->
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-slate-800 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition"><%= order.buyer?.name || 'Ẩn danh' %></div>
+                                <div class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5"><%= order.phone || 'Không có SĐT' %></div>
+                            </td>
+
+                            <!-- Date -->
+                            <td class="px-6 py-4 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+                                <%= new Date(order.createdAt).toLocaleDateString('vi-VN') %>
+                            </td>
+
+                            <!-- Total Price -->
+                            <td class="px-6 py-4 font-black text-right text-slate-900 dark:text-white">
+                                <%= (order.totalPrice || 0).toLocaleString('vi-VN') %> đ
+                            </td>
+
+                            <!-- Status -->
+                            <td class="px-6 py-4 text-center">
+                                <% if (order.status === 'Đã thanh toán cho người bán' || order.status === 'Đã hủy' || order.status === 'Hoàn thành') { %>
+                                    <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase inline-block
+                                        <%= order.status.includes('thanh toán') || order.status === 'Hoàn thành' ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800' : 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800' %>">
+                                        <%= order.status %> 🔒
+                                    </span>
+                                <% } else { %>
+                                    <form action="/orders/update-status/<%= order._id %>" method="POST" class="inline-block">
+                                        <select name="status" onchange="this.form.submit()" 
+                                                class="px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase border border-amber-200 dark:border-amber-800/60 cursor-pointer shadow-sm transition-all bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 outline-none">
+                                            <option value="Chờ xác nhận" <%= order.status === 'Chờ xác nhận' ? 'selected' : '' %>>Chờ xác nhận</option>
+                                            <option value="Đã thanh toán (Admin giữ tiền)" <%= order.status === 'Đã thanh toán (Admin giữ tiền)' ? 'selected' : '' %>>Đã thanh toán</option>
+                                            <option value="Người bán đã chuẩn bị hàng" <%= order.status === 'Người bán đã chuẩn bị hàng' ? 'selected' : '' %>>Người bán chuẩn bị xong</option>
+                                            <option value="Đang giao hàng" <%= order.status === 'Đang giao hàng' ? 'selected' : '' %>>Đang giao hàng</option>
+                                            <option value="Hoàn thành" <%= order.status === 'Hoàn thành' ? 'selected' : '' %>>Hoàn thành</option>
+                                            <option value="Đã hủy (Chờ hoàn tiền)" <%= order.status === 'Đã hủy (Chờ hoàn tiền)' ? 'selected' : '' %>>Chờ hoàn tiền</option>
+                                            <option value="Đã hủy" <%= order.status === 'Đã hủy' ? 'selected' : '' %>>Đã hủy</option>
+                                        </select>
+                                    </form>
+                                <% } %>
+                            </td>
+
+                            <!-- Actions -->
+                            <td class="px-6 py-4 text-center whitespace-nowrap space-x-1">
+                                <button type="button" 
+                                        onclick="openOrderDetails('<%= order._id %>', '<%= order.buyer?.name || `Ẩn danh` %>', '<%= order.phone %>', '<%= order.address %>', '<%= order.createdAt %>', '<%= order.updatedAt %>', '<%= order.totalPrice %>')" 
+                                        class="bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800/60 px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-purple-100 dark:hover:bg-purple-900/60 transition-all">
+                                    Chi tiết
+                                </button>
+
+                                <% if (order.status === 'Hoàn thành') { %>
+                                    <button onclick="releaseFunds('<%= order._id %>')" 
+                                            class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-emerald-700 shadow-sm transition-all">
+                                        Giải ngân
+                                    </button>
+                                <% } %>
+
+                                <% if (order.status === 'Đã hủy (Chờ hoàn tiền)') { %>
+                                    <button onclick="refundOrder('<%= order._id %>')" 
+                                            class="bg-amber-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-amber-700 shadow-sm transition-all">
+                                        Hoàn tiền
+                                    </button>
+                                <% } %>
+                                
+                                <button onclick="deleteOrder('<%= order._id %>')" 
+                                        class="bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/60 px-2.5 py-1.5 rounded-xl text-xs font-bold hover:bg-rose-100 transition-all">
+                                    🗑️
+                                </button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" class="p-16 text-center text-slate-400 dark:text-slate-500 italic">Chưa có đơn hàng nào trong hệ thống.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Order Details Modal (Adapted for Dark Mode) -->
+    <div id="adminOrderModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] flex justify-center items-center transition-all p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform border border-slate-200 dark:border-slate-800" id="modalContent">
+            <div class="bg-slate-900 dark:bg-slate-800 p-5 flex justify-between items-center text-white font-bold border-b border-slate-800 dark:border-slate-700">
+                <h3 class="text-sm font-bold flex items-center gap-2">📋 Chi tiết đơn hàng</h3>
+                <button onclick="closeOrderDetails()" class="text-slate-400 hover:text-white text-xl">&times;</button>
+            </div>
+            <div class="p-6 space-y-3 text-xs text-slate-700 dark:text-slate-300">
+                <p><b>Mã đơn:</b> <span id="md-id" class="font-mono text-purple-600 dark:text-purple-400 font-bold"></span></p>
+                <p><b>Khách hàng:</b> <span id="md-name" class="font-bold"></span></p>
+                <p><b>Số điện thoại:</b> <span id="md-phone"></span></p>
+                <p><b>Địa chỉ nhận hàng:</b> <span id="md-address"></span></p>
+                <p><b>Thời gian tạo:</b> <span id="md-created" class="font-mono"></span></p>
+                <div class="border-t border-slate-100 dark:border-slate-800 pt-3">
+                    <p class="text-right text-base font-bold text-slate-800 dark:text-slate-100">
+                        Tổng thanh toán: <span id="md-price" class="text-emerald-600 dark:text-emerald-400 font-black"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 text-right border-t border-slate-100 dark:border-slate-800">
+                <button onclick="closeOrderDetails()" class="bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-xs transition">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Scripts for Search, Modal, Delete and Actions -->
+<script>
+    function filterOrders() {
+        const input = document.getElementById("orderSearch").value.toLowerCase();
+        const rows = document.querySelectorAll(".order-row");
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(input) ? "" : "none";
+        });
+    }
+
+    async function deleteOrder(orderId) {
+        if(!confirm("⚠️ Bạn có chắc chắn muốn xóa vĩnh viễn đơn hàng này?")) return;
+        try {
+            const res = await fetch(`/admin/orders/delete/${orderId}`, { method: 'POST' });
+            if(res.ok) window.spaNavigate('/orders');
+        } catch (e) {
+            alert("Lỗi khi xóa đơn hàng!");
+        }
+    }
+
+    async function releaseFunds(orderId) {
+        if(!confirm("💰 Xác nhận giải ngân doanh thu cho người bán?")) return;
+        try {
+            const res = await fetch(`/api/admin/release-funds/${orderId}`, { method: 'POST' });
+            const data = await res.json();
+            alert(data.message || 'Giải ngân thành công!');
+            window.spaNavigate('/orders');
+        } catch (e) {
+            alert("Lỗi khi giải ngân!");
+        }
+    }
+
+    async function refundOrder(orderId) {
+        if(!confirm("💸 Xác nhận hoàn trả lại tiền vào ví HaiPay cho khách hàng?")) return;
+        try {
+            const res = await fetch(`/api/admin/refund-order/${orderId}`, { method: 'POST' });
+            const data = await res.json();
+            alert(data.message || 'Hoàn tiền thành công!');
+            window.spaNavigate('/orders');
+        } catch (e) {
+            alert("Lỗi hệ thống hoàn tiền!");
+        }
+    }
+
+    function openOrderDetails(id, name, phone, address, created, updated, price) {
+        document.getElementById('md-id').textContent = '#' + id.slice(-6).toUpperCase();
+        document.getElementById('md-name').textContent = name;
+        document.getElementById('md-phone').textContent = phone;
+        document.getElementById('md-address').textContent = address;
+        document.getElementById('md-created').textContent = new Date(created).toLocaleString('vi-VN');
+        document.getElementById('md-price').textContent = Number(price).toLocaleString('vi-VN') + ' đ';
+        document.getElementById('adminOrderModal').classList.remove('hidden');
+        setTimeout(() => document.getElementById('modalContent').classList.remove('scale-95'), 10);
+    }
+
+    function closeOrderDetails() {
+        document.getElementById('modalContent').classList.add('scale-95');
+        setTimeout(() => document.getElementById('adminOrderModal').classList.add('hidden'), 150);
+    }
+</script>

@@ -1,0 +1,224 @@
+<!-- Mobile Sidebar Overlay Backdrop -->
+<div id="sidebar-backdrop" onclick="window.toggleSidebar()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity"></div>
+
+<!-- Light / Dark Modern Sidebar with Purple Theme & Accordion Groups -->
+<aside id="admin-sidebar" class="w-64 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 min-h-screen p-5 shadow-2xl lg:shadow-sm border-r border-slate-200/80 dark:border-slate-800 flex-shrink-0 fixed z-50 flex flex-col justify-between font-sans transition-all duration-300 -translate-x-full lg:translate-x-0">
+    <div class="flex-1 overflow-y-auto custom-scrollbar pr-1 -mr-1">
+        <!-- Brand Header with Purple Gradient & Mobile Close Button -->
+        <div class="flex items-center justify-between mb-6 px-1">
+            <a href="/dashboard" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-purple-700 to-indigo-600 shadow-md shadow-purple-500/30 flex items-center justify-center text-white text-lg font-bold shrink-0 group-hover:scale-105 transition-transform">
+                    ⚡
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
+                        Hai<span class="text-purple-600">Hand</span>
+                    </h1>
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-purple-600 dark:text-purple-400 mt-1">Admin Portal</span>
+                </div>
+            </a>
+            <!-- Mobile Close Button -->
+            <button onclick="window.toggleSidebar()" class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Đóng Menu">
+                <i class="fas fa-times text-base"></i>
+            </button>
+        </div>
+        
+
+        <div class="px-2 mb-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Menu Quản Trị</span>
+        </div>
+
+        <!-- REORGANIZED ACCORDION SIDEBAR GROUPS -->
+        <nav class="space-y-1.5 pb-6">
+
+            <!-- 1. GROUP: DASHBOARD (Single Direct Link) -->
+            <a href="/dashboard" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl transition-all duration-200 <%= typeof active !== 'undefined' && active === 'dashboard' ? 'bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-600 text-white font-bold shadow-lg shadow-purple-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-purple-50/80 dark:hover:bg-slate-800 hover:text-purple-700 dark:hover:text-purple-400 font-semibold' %>">
+                <div class="flex items-center space-x-3">
+                    <span class="text-base">📊</span>
+                    <span class="text-xs">Tổng quan Dashboard</span>
+                </div>
+            </a>
+
+            <!-- 1.1 BEHAVIOR ANALYTICS & RECOMMENDATIONS -->
+            <a href="/admin/behavior-analytics" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl transition-all duration-200 <%= typeof active !== 'undefined' && active === 'analytics' ? 'bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white font-bold shadow-lg shadow-orange-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-orange-50/80 dark:hover:bg-slate-800 hover:text-orange-600 dark:hover:text-orange-400 font-semibold' %>">
+                <div class="flex items-center space-x-3">
+                    <span class="text-base">🎯</span>
+                    <span class="text-xs">Phân tích Hành vi & Gợi ý</span>
+                </div>
+            </a>
+
+            <!-- 2. GROUP: USER MANAGEMENT (Accordion) -->
+            <% const isUsersGroupActive = typeof active !== 'undefined' && (active === 'users' || active === 'sellers'); %>
+            <div class="accordion-group rounded-2xl overflow-hidden">
+                <button 
+                    onclick="toggleAccordion('acc-users')" 
+                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl transition-all text-slate-600 dark:text-slate-300 hover:bg-purple-50/60 dark:hover:bg-slate-800/80 font-semibold text-xs"
+                >
+                    <div class="flex items-center space-x-3">
+                        <span class="text-base">👥</span>
+                        <span class="<%= isUsersGroupActive ? 'text-purple-600 dark:text-purple-400 font-bold' : '' %>">Quản lý Người dùng</span>
+                    </div>
+                    <i id="acc-users-icon" class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 <%= isUsersGroupActive ? 'rotate-180 text-purple-600' : '' %>"></i>
+                </button>
+                <div id="acc-users-menu" class="pl-7 pr-1 space-y-1 mt-1 transition-all duration-200 <%= isUsersGroupActive ? 'block' : 'hidden' %>">
+                    <a href="/users" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all <%= typeof active !== 'undefined' && active === 'users' ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-slate-50 dark:hover:bg-slate-800/60' %>">
+                        <span>•</span> <span>Danh sách Users</span>
+                    </a>
+                    <a href="/admin/seller-applications" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all <%= typeof active !== 'undefined' && active === 'sellers' ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-slate-50 dark:hover:bg-slate-800/60' %>">
+                        <span>•</span> <span>Duyệt Seller B2C</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 3. GROUP: COMMERCE (Accordion) -->
+            <% const isCommerceGroupActive = typeof active !== 'undefined' && (active === 'categories' || active === 'posts'); %>
+            <div class="accordion-group rounded-2xl overflow-hidden">
+                <button 
+                    onclick="toggleAccordion('acc-commerce')" 
+                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl transition-all text-slate-600 dark:text-slate-300 hover:bg-purple-50/60 dark:hover:bg-slate-800/80 font-semibold text-xs"
+                >
+                    <div class="flex items-center space-x-3">
+                        <span class="text-base">📦</span>
+                        <span class="<%= isCommerceGroupActive ? 'text-purple-600 dark:text-purple-400 font-bold' : '' %>">Thương mại & Hàng hóa</span>
+                    </div>
+                    <i id="acc-commerce-icon" class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 <%= isCommerceGroupActive ? 'rotate-180 text-purple-600' : '' %>"></i>
+                </button>
+                <div id="acc-commerce-menu" class="pl-7 pr-1 space-y-1 mt-1 transition-all duration-200 <%= isCommerceGroupActive ? 'block' : 'hidden' %>">
+                    <a href="/categories" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all <%= typeof active !== 'undefined' && active === 'categories' ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-slate-50 dark:hover:bg-slate-800/60' %>">
+                        <span>•</span> <span>Danh mục hàng</span>
+                    </a>
+                    <a href="/posts" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all <%= typeof active !== 'undefined' && active === 'posts' ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-slate-50 dark:hover:bg-slate-800/60' %>">
+                        <span>•</span> <span>Tin đăng & Sản phẩm</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 4. GROUP: FINANCE (Accordion) -->
+            <% const isFinanceGroupActive = typeof active !== 'undefined' && (active === 'revenue' || active === 'withdrawals' || active === 'orders'); %>
+            <div class="accordion-group rounded-2xl overflow-hidden">
+                <button 
+                    onclick="toggleAccordion('acc-finance')" 
+                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl transition-all text-slate-600 dark:text-slate-300 hover:bg-purple-50/60 dark:hover:bg-slate-800/80 font-semibold text-xs"
+                >
+                    <div class="flex items-center space-x-3">
+                        <span class="text-base">💰</span>
+                        <span class="<%= isFinanceGroupActive ? 'text-purple-600 dark:text-purple-400 font-bold' : '' %>">Tài chính & Doanh thu</span>
+                    </div>
+                    <i id="acc-finance-icon" class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 <%= isFinanceGroupActive ? 'rotate-180 text-purple-600' : '' %>"></i>
+                </button>
+                <div id="acc-finance-menu" class="pl-7 pr-1 space-y-1 mt-1 transition-all duration-200 <%= isFinanceGroupActive ? 'block' : 'hidden' %>">
+                    <a href="/admin/revenue" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all <%= typeof active !== 'undefined' && active === 'revenue' ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-slate-50 dark:hover:bg-slate-800/60' %>">
+                        <span>•</span> <span>Doanh thu sàn HaiPay</span>
+                    </a>
+                    <a href="/admin/withdrawals" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all <%= typeof active !== 'undefined' && active === 'withdrawals' ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-slate-50 dark:hover:bg-slate-800/60' %>">
+                        <span>•</span> <span>Duyệt giải ngân rút tiền</span>
+                    </a>
+                    <a href="/orders" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all <%= typeof active !== 'undefined' && active === 'orders' ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-slate-50 dark:hover:bg-slate-800/60' %>">
+                        <span>•</span> <span>Quản lý Đơn hàng</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 5. GROUP: SUPPORT & POLICY (Accordion) -->
+            <% const isSupportGroupActive = typeof active !== 'undefined' && (active === 'reports' || active === 'chat'); %>
+            <div class="accordion-group rounded-2xl overflow-hidden">
+                <button 
+                    onclick="toggleAccordion('acc-support')" 
+                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl transition-all text-slate-600 dark:text-slate-300 hover:bg-purple-50/60 dark:hover:bg-slate-800/80 font-semibold text-xs"
+                >
+                    <div class="flex items-center space-x-3">
+                        <span class="text-base">🛡️</span>
+                        <span class="<%= isSupportGroupActive ? 'text-purple-600 dark:text-purple-400 font-bold' : '' %>">Hỗ trợ & Chính sách</span>
+                    </div>
+                    <i id="acc-support-icon" class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 <%= isSupportGroupActive ? 'rotate-180 text-purple-600' : '' %>"></i>
+                </button>
+                <div id="acc-support-menu" class="pl-7 pr-1 space-y-1 mt-1 transition-all duration-200 <%= isSupportGroupActive ? 'block' : 'hidden' %>">
+                    <a href="/admin/reports" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all <%= typeof active !== 'undefined' && active === 'reports' ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-slate-50 dark:hover:bg-slate-800/60' %>">
+                        <span>•</span> <span>Báo cáo vi phạm</span>
+                    </a>
+                    <a href="/admin/chat" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all <%= typeof active !== 'undefined' && active === 'chat' ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-slate-50 dark:hover:bg-slate-800/60' %>">
+                        <span>•</span> <span>Tin nhắn CSKH</span>
+                        <span id="admin-chat-badge" class="ml-auto text-[10px] bg-red-500 text-white px-2 py-0.5 rounded-full font-black hidden shadow-md shadow-red-500/40 animate-pulse">0</span>
+                    </a>
+                </div>
+            </div>
+
+        </nav>
+    </div>
+
+    <!-- UI Cleanup: Duplicate bottom profile was removed as requested. Profile is neatly hosted in the top Navbar! -->
+</aside>
+
+<style>
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+</style>
+
+<script>
+    // Responsive Mobile & Desktop Sidebar Toggle Logic
+    window.toggleSidebar = function() {
+        const sidebar = document.getElementById('admin-sidebar');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        if (!sidebar) return;
+
+        const isMobile = window.innerWidth < 1024;
+        if (isMobile) {
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+            if (isClosed) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                if (backdrop) backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                sidebar.classList.remove('translate-x-0');
+                if (backdrop) backdrop.classList.add('hidden');
+            }
+        } else {
+            const isClosed = sidebar.classList.contains('lg:-translate-x-full');
+            const mainContent = document.getElementById('mainContentContainer');
+            if (isClosed) {
+                sidebar.classList.remove('lg:-translate-x-full');
+                if (mainContent) mainContent.classList.remove('lg:ml-0');
+            } else {
+                sidebar.classList.add('lg:-translate-x-full');
+                if (mainContent) mainContent.classList.add('lg:ml-0');
+            }
+        }
+    };
+
+    // Accordion Toggle Logic
+    window.toggleAccordion = function(id) {
+        const menu = document.getElementById(id + '-menu');
+        const icon = document.getElementById(id + '-icon');
+        if (!menu) return;
+
+        const isHidden = menu.classList.contains('hidden');
+        menu.classList.toggle('hidden', !isHidden);
+        if (icon) {
+            icon.classList.toggle('rotate-180', isHidden);
+            icon.classList.toggle('text-purple-600', isHidden);
+        }
+    };
+
+    window.fetchUnreadChats = async function() {
+        try {
+            const res = await fetch('/api/admin/unread-chats');
+            const data = await res.json();
+            const chatBadge = document.getElementById('admin-chat-badge');
+            if(chatBadge) {
+                if(data.count > 0) {
+                    chatBadge.textContent = data.count > 99 ? '99+' : data.count;
+                    chatBadge.classList.remove('hidden');
+                } else {
+                    chatBadge.classList.add('hidden');
+                }
+            }
+        } catch(e) {}
+    };
+
+    window.fetchUnreadChats();
+    setInterval(window.fetchUnreadChats, 10000);
+</script>

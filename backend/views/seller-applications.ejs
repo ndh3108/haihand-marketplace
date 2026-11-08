@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Duyệt hồ sơ Seller</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 flex min-h-screen font-sans">
+    <%- include('partials/sidebar', {active: 'sellers'}) %>
+    <div class="flex-1 p-10 h-screen overflow-y-auto ml-64">
+        <h2 class="text-3xl font-bold text-slate-800 mb-6">Hồ sơ đăng ký Shop</h2>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 border-b">
+                    <tr>
+                        <th class="p-4 text-xs uppercase text-slate-500">Người dùng</th>
+                        <th class="p-4 text-xs uppercase text-slate-500">Shop</th>
+                        <th class="p-4 text-xs uppercase text-slate-500">Trạng thái</th>
+                        <th class="p-4 text-xs uppercase text-slate-500">Ngày gửi</th>
+                        <th class="p-4 text-xs uppercase text-slate-500 text-right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (!applications || applications.length === 0) { %>
+                    <tr><td colspan="5" class="p-8 text-center text-slate-500">Chưa có hồ sơ nào.</td></tr>
+                    <% } %>
+                    <% (applications || []).forEach(function(user) { %>
+                    <tr class="border-b hover:bg-slate-50">
+                        <td class="p-4">
+                            <p class="font-bold"><%= user.name %></p>
+                            <p class="text-xs text-slate-500"><%= user.email %></p>
+                        </td>
+                        <td class="p-4">
+                            <p class="font-semibold"><%= user.shopInfo && user.shopInfo.shopName ? user.shopInfo.shopName : '—' %></p>
+                            <p class="text-xs text-slate-500"><%= user.shopInfo && user.shopInfo.address ? user.shopInfo.address : '' %></p>
+                        </td>
+                        <td class="p-4">
+                            <span class="text-xs font-bold px-2 py-1 rounded <%= user.sellerStatus === 'pending' ? 'bg-orange-100 text-orange-700' : user.sellerStatus === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700' %>"><%= user.sellerStatus %></span>
+                        </td>
+                        <td class="p-4 text-sm text-slate-500"><%= user.sellerAppliedAt ? new Date(user.sellerAppliedAt).toLocaleString('vi-VN') : '—' %></td>
+                        <td class="p-4 text-right space-x-2">
+                            <% if (user.sellerStatus === 'pending') { %>
+                            <form method="POST" action="/admin/approve-seller/<%= user._id %>" class="inline">
+                                <button class="bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded">Duyệt</button>
+                            </form>
+                            <form method="POST" action="/admin/reject-seller/<%= user._id %>" class="inline">
+                                <button class="bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded">Từ chối</button>
+                            </form>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

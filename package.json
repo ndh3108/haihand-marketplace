@@ -1,0 +1,17 @@
+{
+  "name": "haihand-marketplace",
+  "version": "1.0.0",
+  "description": "HaiHand Marketplace Root",
+  "scripts": {
+    "start": "concurrently \"npm run start-frontend\" \"npm run start-backend\" \"npm run start-admin\"",
+    "start-frontend": "cd frontend && npm start",
+    "start-backend": "cd backend && npm start",
+    "start-admin": "cd admin && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0"
+  }
+}

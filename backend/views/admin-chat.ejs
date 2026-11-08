@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tin nhắn CSKH - HaiHand Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #f8fafc; }
+    </style>
+</head>
+<body class="flex min-h-screen font-sans">
+    
+    <%- include('partials/sidebar', {active: 'chat'}) %>
+
+    <div class="flex-1 h-screen p-6" style="margin-left: 256px;">
+        
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-black tracking-tight text-slate-800">🎧 Trực ban CSKH</h2>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl w-full border border-slate-200 overflow-hidden" style="height: calc(100vh - 100px);">
+            <iframe src="https://hai-hand-marketplace.vercel.app/chat?embed=true" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+
+    </div>
+</body>
+</html>

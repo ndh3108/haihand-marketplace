@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>AdminPro - Quản lý danh mục</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 flex min-h-screen font-sans">
+    
+    <%- include('partials/sidebar') %>
+
+    <div class="flex-1 p-10 h-screen overflow-y-auto">
+        <h2 class="text-3xl font-bold text-slate-800 mb-6">📁 Quản lý danh mục</h2>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <div class="lg:w-1/3">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-blue-500 text-white font-bold p-4">
+                        Thêm danh mục mới
+                    </div>
+                    <div class="p-6">
+                        <form action="/categories/add" method="POST" enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label class="block font-bold text-slate-700 mb-2">Tên danh mục</label>
+                                <input type="text" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" name="name" placeholder="Ví dụ: Đồ điện tử" required />
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="block font-bold text-slate-700 mb-2">Ghi chú (Mô tả)</label>
+                                <textarea class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" name="description" rows="2" placeholder="Không bắt buộc"></textarea>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block font-bold text-slate-700 mb-2">Icon hình ảnh</label>
+                                <input type="file" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" name="image" accept="image/*" required />
+                            </div>
+
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition">
+                                + Thêm ngay
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:w-2/3">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-50 border-b border-slate-200">
+                            <tr>
+                                <th class="p-4 font-bold text-slate-600 uppercase text-xs">#</th>
+                                <th class="p-4 font-bold text-slate-600 uppercase text-xs">Icon</th>
+                                <th class="p-4 font-bold text-slate-600 uppercase text-xs">Tên danh mục</th>
+                                <th class="p-4 font-bold text-slate-600 uppercase text-xs text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (categories && categories.length > 0) { %>
+                                <% categories.forEach((cat, index) => { %>
+                                <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                                    <td class="p-4 font-bold text-slate-700"><%= index + 1 %></td>
+                                    <td class="p-4">
+                                        <% 
+                                            
+                                            let catImg = 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';
+                                            if (cat.image) {
+                                                let rawImg = String(cat.image).trim(); 
+                                                if (rawImg.includes('http')) {
+                                                    catImg = rawImg.substring(rawImg.indexOf('http'));
+                                                } else {
+                                                    catImg = '/uploads/' + rawImg.replace(/\\/g, '/');
+                                                }
+                                            }
+                                        %>
+                                        <img src="<%= catImg %>" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'" class="w-12 h-12 object-cover rounded-lg shadow-sm" />
+                                    </td>
+                                    <td class="p-4 font-bold text-slate-800"><%= cat.name %></td>
+                                    <td class="p-4 text-center space-x-2">
+                                        <a href="/categories/edit/<%= cat._id %>" class="inline-block text-blue-500 hover:text-blue-700 font-bold bg-blue-50 px-3 py-1 rounded hover:bg-blue-100 transition">✏️ Sửa</a>
+                                        <a href="/categories/delete/<%= cat._id %>" class="inline-block text-red-500 hover:text-red-700 font-bold bg-red-50 px-3 py-1 rounded hover:bg-red-100 transition" onclick="return confirm('Bạn có chắc chắc muốn xóa danh mục này không? Xóa rồi là mất hình icon luôn đó!')">🗑️ Xóa</a>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="4" class="text-slate-500 text-center py-10">Chưa có danh mục nào.</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

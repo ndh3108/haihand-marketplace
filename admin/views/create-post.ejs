@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AdminPro - Đăng tin mới</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <style>
+      .ck-editor__editable {
+        min-height: 250px;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-100 flex min-h-screen font-sans">
+    <%- include('partials/sidebar') %>
+
+    <div class="flex-1 p-10 h-screen overflow-y-auto">
+      <h2 class="text-3xl font-bold mb-8 text-slate-800">
+        Đăng tin bất động sản mới
+      </h2>
+
+      <div
+        class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 max-w-5xl mx-auto"
+      >
+        <form id="postForm" action="/create-post" method="POST" enctype="multipart/form-data">
+          
+          <div class="mb-6">
+            <label class="block text-slate-700 font-bold mb-2">Tên sản phẩm</label>
+            <input type="text" name="title" placeholder="Ví dụ: iPhone 15 Pro Max cũ..." class="w-full p-3 border border-slate-300 rounded-lg bg-slate-50" required />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+            <div>
+              <label class="block text-slate-700 font-bold mb-2">Giá bán (VNĐ)</label>
+              <input type="number" name="price" placeholder="Ví dụ: 5000000" class="w-full p-3 border border-slate-300 rounded-lg bg-slate-50" required />
+            </div>
+
+            <div>
+              <label class="block text-slate-700 font-bold mb-2">Thông tin chi tiết</label>
+              <div class="flex space-x-4">
+                
+                <select name="category" class="w-1/2 p-3 border border-slate-300 rounded-lg bg-slate-50 outline-none">
+                  <option value="Đồ điện tử">📱 Đồ điện tử</option>
+                  <option value="Xe cộ">🛵 Xe cộ</option>
+                  <option value="Thời trang">👕 Thời trang</option>
+                  <option value="Thú cưng">🐶 Thú cưng</option>
+                  <option value="Đồ gia dụng">🪑 Đồ gia dụng</option>
+                  <option value="Khác">📦 Khác</option>
+                </select>
+
+                <input type="text" name="location" placeholder="Nơi bán (VD: Hà Nội)" class="w-1/2 p-3 border border-slate-300 rounded-lg bg-slate-50" required />
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-slate-700 font-bold mb-2">Ảnh sản phẩm</label>
+            <input type="file" name="image" class="w-full p-2 border border-slate-300 rounded-lg bg-white" />
+          </div>
+
+          <div class="mb-8">
+            <label class="block text-slate-700 font-bold mb-2">Mô tả sản phẩm</label>
+            <textarea id="editor" name="description" placeholder="Tình trạng máy, phụ kiện đi kèm..."></textarea>
+          </div>
+
+          <div class="flex justify-end space-x-4 pt-4 border-t border-slate-100">
+            <button type="button" onclick="window.location.href = '/posts'" class="px-6 py-3 rounded-lg text-slate-600 hover:bg-slate-100">Hủy bỏ</button>
+            <button type="submit" class="px-8 py-3 bg-yellow-500 text-slate-900 font-bold rounded-lg hover:bg-yellow-400 shadow-lg">🚀 Đăng bán ngay</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      
+      ClassicEditor.create(document.querySelector("#editor")).catch((error) => {
+        console.error(error);
+      });
+
+      
+      document
+        .getElementById("postForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault(); 
+
+          const form = this; 
+
+          Swal.fire({
+            title: "Xác nhận đăng tin?",
+            text: "Tin đăng sẽ được lưu vào hệ thống ngay lập tức.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#2563eb",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý, đăng ngay!",
+            cancelButtonText: "Kiểm tra lại",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              
+              form.submit();
+            }
+          });
+        });
+    </script>
+  </body>
+</html>

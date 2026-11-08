@@ -1,0 +1,169 @@
+<div class="w-64 bg-slate-900 text-white min-h-screen p-6 shadow-xl flex-shrink-0 fixed z-50">
+    <div class="flex items-center space-x-3 mb-10">
+        <div class="bg-warning p-2 rounded-lg text-2xl">⚡</div>
+        <h1 class="text-2xl font-black text-white tracking-tighter">HaiHand <span class="text-yellow-400">Admin</span></h1>
+    </div>
+    
+    <div class="relative mb-6">
+        <button onclick="window.toggleAdminNotifs()" class="w-full flex items-center justify-between bg-slate-800 p-3 rounded-xl hover:bg-slate-700 transition relative border border-slate-700">
+            <div class="flex items-center space-x-3">
+                <span class="animate-bounce">🔔</span>
+                <span class="font-bold text-slate-200 text-sm">Thông báo</span>
+            </div>
+            <span id="admin-notif-badge" class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full hidden shadow-lg shadow-red-500/50">0</span>
+        </button>
+
+        <div id="admin-notif-panel" class="hidden absolute top-full left-0 w-80 bg-white rounded-xl shadow-2xl border border-slate-200 mt-2 z-50 overflow-hidden transform transition-all">
+            <div class="p-3 bg-slate-50 border-b flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-sm">Hoạt động hệ thống</h3>
+                <div class="flex gap-3">
+                    <button onclick="window.testAdminNotif()" class="text-[10px] text-green-600 font-bold hover:underline">Tạo Test</button>
+                    <button onclick="window.markNotifsAsRead()" class="text-[10px] text-blue-600 font-bold hover:underline">Đã đọc hết</button>
+                </div>
+            </div>
+            <div id="admin-notif-list" class="max-h-80 overflow-y-auto divide-y divide-slate-100 bg-white text-black">
+                <div class="p-4 text-center text-xs text-slate-400">Đang tải...</div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="space-y-2">
+        <a href="/dashboard" class="flex items-center space-x-3 p-3 rounded-xl transition <%= typeof active !== 'undefined' && active === 'dashboard' ? 'bg-blue-600 font-bold shadow-lg shadow-blue-900/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white' %>">
+            <span>📊</span> <span>Tổng quan</span>
+        </a>
+        <a href="/admin/revenue" class="flex items-center space-x-3 p-3 rounded-xl transition <%= typeof active !== 'undefined' && active === 'revenue' ? 'bg-blue-600 font-bold shadow-lg shadow-blue-900/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white' %>">
+            <span>💰</span> <span>Doanh thu</span>
+        </a>
+        <a href="/admin/withdrawals" class="flex items-center space-x-3 p-3 rounded-xl transition <%= typeof active !== 'undefined' && active === 'withdrawals' ? 'bg-blue-600 font-bold shadow-lg shadow-blue-900/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white' %>">
+            <span>🏧</span> <span>Duyệt rút tiền</span>
+        </a>
+        <a href="/posts" class="flex items-center space-x-3 p-3 rounded-xl transition <%= typeof active !== 'undefined' && active === 'posts' ? 'bg-blue-600 font-bold' : 'text-slate-400 hover:bg-slate-800 hover:text-white' %>">
+            <span>📦</span> <span>Tin đăng</span>
+        </a>
+        <a href="/users" class="flex items-center space-x-3 p-3 rounded-xl transition <%= typeof active !== 'undefined' && active === 'users' ? 'bg-blue-600 font-bold' : 'text-slate-400 hover:bg-slate-800 hover:text-white' %>">
+            <span>👥</span> <span>Người dùng</span>
+        </a>
+        <a href="/admin/seller-applications" class="flex items-center space-x-3 p-3 rounded-xl transition <%= typeof active !== 'undefined' && active === 'sellers' ? 'bg-blue-600 font-bold' : 'text-slate-400 hover:bg-slate-800 hover:text-white' %>">
+            <span>🏪</span> <span>Duyệt Seller</span>
+        </a>
+        <a href="/categories" class="flex items-center space-x-3 p-3 rounded-xl transition <%= typeof active !== 'undefined' && active === 'categories' ? 'bg-blue-600 font-bold' : 'text-slate-400 hover:bg-slate-800 hover:text-white' %>">
+            <span>📁</span> <span>Danh mục</span>
+        </a>
+        <a href="/orders" class="flex items-center space-x-3 p-3 rounded-xl transition <%= typeof active !== 'undefined' && active === 'orders' ? 'bg-blue-600 font-bold' : 'text-slate-400 hover:bg-slate-800 hover:text-white' %>">
+            <span>🛍️</span> <span>Đơn hàng</span>
+        </a>
+        <a href="/admin/reports" class="flex items-center space-x-3 p-3 rounded-xl transition <%= typeof active !== 'undefined' && active === 'reports' ? 'bg-blue-600 font-bold shadow-lg' : 'text-slate-400 hover:bg-slate-800 hover:text-white' %>">
+            <span>🚩</span> <span>Báo cáo vi phạm</span>
+        </a>
+        
+        <a href="/admin/chat" class="flex items-center space-x-3 p-3 rounded-xl transition <%= typeof active !== 'undefined' && active === 'chat' ? 'bg-blue-600 font-bold shadow-lg text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white' %>">
+            <span>💬</span> <span class="font-bold">Tin nhắn CSKH</span>
+            <span id="admin-chat-badge" class="ml-auto text-[10px] bg-red-500 text-white px-2 py-0.5 rounded-full font-black hidden shadow-lg shadow-red-500/50 animate-pulse">0</span>
+        </a>
+    </nav>
+
+    <div class="mt-auto pt-10 border-t border-slate-800 absolute bottom-6 w-full pr-12">
+        <div class="flex items-center space-x-3 p-2">
+            <div class="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center font-bold text-black text-lg shadow-sm">T</div>
+            <div>
+                <p class="text-sm font-bold text-white mb-0">Lê Minh Triết</p>
+                <a href="/logout" class="text-[10px] text-yellow-500 hover:underline">Đăng xuất →</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+  .flex-1.p-10 { margin-left: 256px; }
+  .flex-1.p-6 { margin-left: 256px; }
+</style>
+
+<script>
+    window.isNotifOpen = false;
+    window.toggleAdminNotifs = function() {
+        window.isNotifOpen = !window.isNotifOpen;
+        document.getElementById('admin-notif-panel').classList.toggle('hidden', !window.isNotifOpen);
+    };
+    window.fetchAdminNotifs = async function() {
+        try {
+            const res = await fetch('/api/admin/notifications?scope=admin');
+            if(!res.ok) return;
+            const data = await res.json();
+            
+            const badge = document.getElementById('admin-notif-badge');
+            if (data.unreadCount > 0) {
+                badge.textContent = data.unreadCount > 99 ? '99+' : data.unreadCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            const list = document.getElementById('admin-notif-list');
+            if (!data.notifications || data.notifications.length === 0) {
+                list.innerHTML = '<div class="p-4 text-center text-xs text-slate-400">Chưa có hoạt động hệ thống nào.</div>';
+                return;
+            }
+
+            
+            list.innerHTML = data.notifications.map(n => {
+                let targetLink = '#'; 
+                let titleLower = n.title.toLowerCase();
+
+                if (n.link) { 
+                    targetLink = n.link; 
+                } else if (titleLower.includes('rút tiền') || titleLower.includes('giải ngân')) {
+                    targetLink = '/admin/withdrawals';
+                } else if (titleLower.includes('vi phạm') || titleLower.includes('báo cáo') || titleLower.includes('cảnh báo')) {
+                    targetLink = '/admin/reports';
+                } else if (titleLower.includes('đơn hàng') || titleLower.includes('chốt đơn') || titleLower.includes('đơn mua') || titleLower.includes('giao hàng')) {
+                    targetLink = '/orders';
+                } else if (titleLower.includes('bài viết') || titleLower.includes('tin đăng') || titleLower.includes('sản phẩm mới')) {
+                    targetLink = '/posts';
+                } else if (titleLower.includes('người dùng') || titleLower.includes('tài khoản')) {
+                    targetLink = '/users';
+                }
+
+                return `
+                    <a href="${targetLink}" class="block p-3 hover:bg-slate-100 transition border-b border-slate-50 cursor-pointer ${!n.isRead ? 'bg-blue-50/60' : ''}">
+                        <h4 class="text-xs font-bold text-blue-700 mb-1">${n.title}</h4>
+                        <p class="text-[10px] text-slate-600 leading-relaxed">${n.message}</p>
+                        <div class="text-[9px] text-slate-400 mt-1 font-mono">${new Date(n.createdAt).toLocaleString('vi-VN')}</div>
+                    </a>
+                `;
+            }).join('');
+            
+        } catch (e) { console.log("Chưa tải được thông báo"); }
+    };
+
+    window.markNotifsAsRead = async function() {
+        await fetch('/api/admin/notifications/read', { method: 'POST' });
+        window.fetchAdminNotifs();
+    };
+
+    window.testAdminNotif = async function() {
+        await fetch('/api/admin/test-notif');
+        window.fetchAdminNotifs();
+        if (!window.isNotifOpen) window.toggleAdminNotifs();
+    };
+
+    window.fetchUnreadChats = async function() {
+        try {
+            const res = await fetch('/api/admin/unread-chats');
+            const data = await res.json();
+            const chatBadge = document.getElementById('admin-chat-badge');
+            if(chatBadge) {
+                if(data.count > 0) {
+                    chatBadge.textContent = data.count > 99 ? '99+' : data.count;
+                    chatBadge.classList.remove('hidden');
+                } else {
+                    chatBadge.classList.add('hidden');
+                }
+            }
+        } catch(e) {}
+    };
+
+    window.fetchAdminNotifs();
+    window.fetchUnreadChats();
+    setInterval(window.fetchAdminNotifs, 5000);
+    setInterval(window.fetchUnreadChats, 5000);
+</script>

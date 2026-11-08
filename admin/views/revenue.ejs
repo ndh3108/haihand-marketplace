@@ -1,0 +1,84 @@
+<!-- REVENUE VIEW (Inner Content Only for AdminLayout Outlet) -->
+<div class="space-y-6">
+    
+    <!-- Title & Action Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-2.5">
+                <h2 class="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                    💰 Doanh Thu Sàn HaiPay
+                </h2>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800">
+                    Phí chiết khấu 5%
+                </span>
+            </div>
+            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 font-medium">
+                Theo dõi và quản lý phí hoa hồng nền tảng tự động trích xuất từ các đơn hàng thành công.
+            </p>
+        </div>
+        <button onclick="window.print()" class="self-start sm:self-auto bg-slate-900 dark:bg-slate-800 hover:bg-purple-600 dark:hover:bg-purple-600 text-white px-5 py-2.5 rounded-2xl font-bold transition-all shadow-md text-xs flex items-center gap-2">
+            <span>🖨️</span>
+            <span>Xuất báo cáo</span>
+        </button>
+    </div>
+
+    <!-- Total Revenue Gradient Hero Card -->
+    <div class="bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 rounded-3xl p-8 text-white shadow-xl shadow-orange-500/20 relative overflow-hidden">
+        <div class="relative z-10">
+            <h6 class="text-xs font-bold uppercase tracking-widest opacity-85 mb-2">Tổng thu nhập hoa hồng tích lũy</h6>
+            <div class="flex items-baseline space-x-2">
+                <span class="text-4xl sm:text-5xl font-black tracking-tight"><%= (typeof totalRevenue !== 'undefined' ? totalRevenue : 0).toLocaleString('vi-VN') %></span>
+                <span class="text-2xl font-bold opacity-85">VNĐ</span>
+            </div>
+            <p class="text-xs opacity-75 mt-2">Đã tự động cộng vào tài khoản quản trị hệ thống.</p>
+        </div>
+        <div class="absolute right-[-20px] bottom-[-20px] text-[150px] opacity-15 rotate-12 pointer-events-none select-none">💸</div>
+    </div>
+
+    <!-- Detailed Revenue Table Card -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 overflow-hidden transition-colors duration-200">
+        <div class="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex justify-between items-center">
+            <h5 class="font-bold text-slate-800 dark:text-slate-100 text-sm">Lịch sử thu phí hoa hồng chi tiết</h5>
+            <span class="text-xs text-slate-400 font-mono">Real-time</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase text-[11px] tracking-wider">
+                        <th class="px-6 py-4 text-center">Ngày giao dịch</th>
+                        <th class="px-6 py-4 text-center">Mã đơn</th>
+                        <th class="px-6 py-4">Khách hàng</th>
+                        <th class="px-6 py-4 text-right">Giá trị đơn</th>
+                        <th class="px-6 py-4 text-center text-emerald-600 dark:text-emerald-400">Lãi sàn (5%)</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                    <% const list = typeof revenueList !== 'undefined' ? revenueList : (typeof revenues !== 'undefined' ? revenues : []); %>
+                    <% if (list.length === 0) { %>
+                        <tr><td colspan="5" class="px-6 py-12 text-center text-slate-400 dark:text-slate-500 italic">Chưa có dữ liệu hoa hồng nào phát sinh.</td></tr>
+                    <% } %>
+                    <% list.forEach(item => { %>
+                        <tr class="hover:bg-purple-50/40 dark:hover:bg-slate-800/50 transition-colors">
+                            <td class="px-6 py-4 text-center text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+                                <%= new Date(item.createdAt).toLocaleDateString('vi-VN') %>
+                            </td>
+                            <td class="px-6 py-4 font-mono font-bold text-center text-purple-600 dark:text-purple-400">
+                                #<%= item.orderId?._id ? item.orderId._id.toString().slice(-6).toUpperCase() : 'N/A' %>
+                            </td>
+                            <td class="px-6 py-4 font-semibold text-slate-800 dark:text-slate-200">
+                                <%= item.orderId?.buyer?.name || 'Ẩn danh' %>
+                            </td>
+                            <td class="px-6 py-4 text-right font-bold text-slate-700 dark:text-slate-300">
+                                <%= (item.orderId?.totalPrice || 0).toLocaleString('vi-VN') %> đ
+                            </td>
+                            <td class="px-6 py-4 text-center font-black text-emerald-600 dark:text-emerald-400">
+                                +<%= (item.commissionAmount || 0).toLocaleString('vi-VN') %> đ
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

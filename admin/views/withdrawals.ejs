@@ -1,0 +1,110 @@
+<!-- WITHDRAWALS VIEW (Inner Content Only for AdminLayout Outlet) -->
+<div class="space-y-6">
+    
+    <!-- Title & Description -->
+    <div>
+        <div class="flex items-center gap-2.5">
+            <h2 class="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                🏧 Quản Lý Rút Tiền & Giải Ngân
+            </h2>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800">
+                Ví HaiPay
+            </span>
+        </div>
+        <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 font-medium">
+            Kiểm tra và duyệt các lệnh yêu cầu rút tiền từ ví người bán về tài khoản ngân hàng.
+        </p>
+    </div>
+
+    <!-- Stat Highlights -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 border-l-4 border-l-purple-500 transition-colors">
+            <h3 class="text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">Lệnh chờ xử lý</h3>
+            <p class="text-3xl sm:text-4xl font-black text-slate-800 dark:text-slate-100 mt-2">
+                <%= typeof withdrawals !== 'undefined' ? withdrawals.length : 0 %>
+            </p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 border-l-4 border-l-amber-500 transition-colors">
+            <h3 class="text-amber-600 dark:text-amber-400 font-bold text-xs uppercase tracking-wider">Tổng tiền cần giải ngân</h3>
+            <p class="text-3xl sm:text-4xl font-black text-amber-600 dark:text-amber-400 mt-2">
+                <%= (typeof withdrawals !== 'undefined' ? withdrawals.reduce((sum, w) => sum + (w.amount || 0), 0) : 0).toLocaleString('vi-VN') %> đ
+            </p>
+        </div>
+    </div>
+
+    <!-- Withdrawals Table Card -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 overflow-hidden transition-colors duration-200">
+        <div class="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex justify-between items-center">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                <span>📄</span> Danh sách yêu cầu rút tiền
+            </h3>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase text-[11px] tracking-wider">
+                        <th class="px-6 py-4">Thời gian tạo</th>
+                        <th class="px-6 py-4">Tài khoản User</th>
+                        <th class="px-6 py-4 text-right">Số tiền rút</th>
+                        <th class="px-6 py-4 text-center">Trạng thái</th>
+                        <th class="px-6 py-4 text-center">Thao tác Kế toán</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                    <% if (typeof withdrawals === 'undefined' || withdrawals.length === 0) { %>
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-slate-400 dark:text-slate-500 font-medium italic">
+                                Không có yêu cầu rút tiền nào đang chờ xử lý. Tuyệt vời!
+                            </td>
+                        </tr>
+                    <% } else { %>
+                        <% withdrawals.forEach(req => { %>
+                            <tr class="hover:bg-purple-50/40 dark:hover:bg-slate-800/50 transition-colors">
+                                <td class="px-6 py-4 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+                                    <%= new Date(req.createdAt).toLocaleString('vi-VN') %>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <p class="font-bold text-slate-800 dark:text-slate-100"><%= req.user?.name || 'Tài khoản ẩn danh' %></p>
+                                    <p class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">Mã: #<%= req._id.toString().slice(-6).toUpperCase() %></p>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <span class="text-rose-600 dark:text-rose-400 font-black text-sm">-<%= (req.amount || 0).toLocaleString('vi-VN') %> đ</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800 px-3 py-1 rounded-full text-[10px] font-bold">
+                                        ĐANG XỬ LÝ
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <button onclick="approveWithdraw('<%= req._id %>')" class="text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-4 py-1.5 rounded-xl shadow-sm transition">
+                                        ✅ Đã chuyển tiền
+                                    </button>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    async function approveWithdraw(id) {
+        if(confirm('⚠️ XÁC NHẬN NGHIỆP VỤ:\nBạn ĐÃ DÙNG APP NGÂN HÀNG để chuyển tiền mặt cho khách hàng này chưa?\n\nHành động này không thể hoàn tác!')) {
+            try {
+                const res = await fetch(`/admin/withdrawals/approve/${id}`, { method: 'POST' });
+                if(res.ok) {
+                    alert('🎉 Đã xác nhận giải ngân thành công!');
+                    window.spaNavigate('/admin/withdrawals');
+                } else {
+                    alert('❌ Có lỗi xảy ra, vui lòng thử lại!');
+                }
+            } catch(err) {
+                alert('❌ Mất kết nối tới máy chủ!');
+            }
+        }
+    }
+</script>

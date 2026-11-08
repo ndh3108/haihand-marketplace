@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống kê Doanh thu - HaiHand Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        /* 🚀 PHẦN FIX IN ẤN TRIỆT ĐỂ */
+        @media print {
+            /* 1. Xóa sạch Sidebar bằng mọi giá */
+            #admin-sidebar, 
+            .w-64, 
+            aside, 
+            .no-print, 
+            button, 
+            .bg-gradient-to-br {
+                display: none !important;
+                visibility: hidden !important;
+                width: 0 !important;
+                height: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                position: absolute !important; /* Đẩy ra khỏi luồng hiển thị */
+            }
+
+            /* 2. Ép nội dung chính tràn hết trang giấy, bỏ lề trái ml-64 */
+            main, 
+            .ml-64, 
+            .flex-1 {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                display: block !important;
+            }
+
+            /* 3. Tiêu đề báo cáo khi in */
+            .print-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #000;
+                padding-bottom: 10px;
+            }
+
+            /* 4. Định dạng lại bảng cho sát lề giấy in */
+            .max-w-6xl {
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            
+            .bg-white {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+            }
+
+            body {
+                background: white !important;
+            }
+        }
+
+        .print-header { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50 flex min-h-screen">
+
+    <div id="admin-sidebar" class="no-print">
+        <%- include('partials/sidebar', {active: 'revenue'}) %>
+    </div>
+
+    <main class="flex-1 p-10 ml-64 transition-all duration-300">
+        <div class="max-w-6xl mx-auto">
+            
+            <div class="print-header">
+                <h1 class="text-2xl font-bold uppercase">Báo cáo doanh thu chiết khấu HaiHand</h1>
+                <p>Ngày xuất: <%= new Date().toLocaleString('vi-VN') %></p>
+            </div>
+
+            <div class="flex justify-between items-center mb-8 no-print">
+                <div>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">💰 Doanh thu sàn</h2>
+                    <p class="text-slate-500 mt-1">Quản lý phí chiết khấu 5% giao dịch.</p>
+                </div>
+                <button onclick="window.print()" class="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold hover:scale-105 transition shadow-lg flex items-center space-x-2">
+                    <span>🖨️</span>
+                    <span>Xuất báo cáo</span>
+                </button>
+            </div>
+
+            <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl p-8 text-white shadow-2xl shadow-orange-200 mb-10 relative overflow-hidden no-print">
+                <div class="relative z-10">
+                    <h6 class="text-sm font-bold uppercase tracking-widest opacity-80 mb-2">Tổng thu nhập sàn</h6>
+                    <div class="flex items-baseline space-x-2">
+                        <span class="text-5xl font-black"><%= totalRevenue.toLocaleString('vi-VN') %></span>
+                        <span class="text-2xl font-bold opacity-80">VNĐ</span>
+                    </div>
+                </div>
+                <div class="absolute right-[-20px] bottom-[-20px] text-[150px] opacity-20 rotate-12">💸</div>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+                <div class="p-6 border-b border-slate-50 bg-slate-50/50 no-print">
+                    <h5 class="font-bold text-slate-800">Lịch sử thu phí chi tiết</h5>
+                </div>
+                <div class="overflow-x-auto p-4">
+                    <table class="w-full text-left border-collapse border border-slate-100">
+                        <thead>
+                            <tr class="text-slate-400 text-xs uppercase tracking-widest border-b border-slate-100 bg-slate-50">
+                                <th class="px-4 py-3 font-bold border text-center">Ngày giao dịch</th>
+                                <th class="px-4 py-3 font-bold border text-center">Mã đơn</th>
+                                <th class="px-4 py-3 font-bold border">Khách hàng</th>
+                                <th class="px-4 py-3 font-bold text-right border">Giá trị đơn</th>
+                                <th class="px-4 py-3 font-bold text-center border text-emerald-600">Lãi (5%)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <% if (revenueList.length === 0) { %>
+                                <tr><td colspan="5" class="px-6 py-10 text-center text-slate-400 font-medium">Chưa có dữ liệu.</td></tr>
+                            <% } %>
+                            <% revenueList.forEach(item => { %>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="px-4 py-3 text-sm border text-center text-slate-500">
+                                        <%= item.createdAt.toLocaleString('vi-VN', { dateStyle: 'short' }) %>
+                                    </td>
+                                    <td class="px-4 py-3 font-bold border text-center">
+                                        #<%= item.orderId?._id.toString().slice(-6).toUpperCase() %>
+                                    </td>
+                                    <td class="px-4 py-3 border font-semibold text-slate-700">
+                                        <%= item.orderId?.buyer?.name || 'N/A' %>
+                                    </td>
+                                    <td class="px-4 py-3 text-right border font-bold text-slate-600">
+                                        <%= item.orderId?.totalPrice.toLocaleString('vi-VN') %>đ
+                                    </td>
+                                    <td class="px-4 py-3 text-center font-black border text-emerald-600">
+                                        +<%= item.commissionAmount.toLocaleString('vi-VN') %>đ
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <p class="text-center text-slate-400 text-xs mt-10 font-medium uppercase tracking-widest no-print">
+                &copy; 2026 HaiHand - Admin Dashboard
+            </p>
+        </div>
+    </main>
+
+</body>
+</html>

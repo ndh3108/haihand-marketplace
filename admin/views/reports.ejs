@@ -1,0 +1,80 @@
+<!-- REPORTS VIEW (Inner Content Only for AdminLayout Outlet) -->
+<div class="space-y-6">
+    
+    <!-- Title & Stats Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-2.5">
+                <h2 class="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                    🚩 Báo Cáo Vi Phạm
+                </h2>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800">
+                    <%= typeof reports !== 'undefined' ? reports.length : 0 %> Yêu cầu
+                </span>
+            </div>
+            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 font-medium">
+                Kiểm duyệt và xử lý các tin đăng hoặc người dùng bị khiếu nại vi phạm chính sách cộng đồng.
+            </p>
+        </div>
+    </div>
+
+    <% if(typeof reports === 'undefined' || reports.length === 0) { %>
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-16 text-center shadow-sm border border-slate-200/80 dark:border-slate-800 transition-colors">
+            <div class="text-5xl mb-3 opacity-60">🍃</div>
+            <p class="font-bold text-slate-700 dark:text-slate-200 text-base">Hiện tại hệ thống sạch bóng vi phạm!</p>
+            <p class="text-slate-400 dark:text-slate-500 text-xs mt-1">Không có tin đăng hoặc người dùng nào bị tố cáo cần xử lý.</p>
+        </div>
+    <% } else { %>
+        <div class="grid gap-4">
+            <% reports.forEach(report => { %>
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 hover:border-rose-300 dark:hover:border-rose-800/80 transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="flex gap-4 items-start">
+                    <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xl shrink-0 border border-rose-200/60 dark:border-rose-800/60">
+                        ⚠️
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3 mb-1">
+                            <h4 class="font-black text-slate-800 dark:text-slate-100 text-base"><%= report.reason %></h4>
+                            <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase border border-slate-200 dark:border-slate-700">
+                                <%= report.status %>
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                            Người gửi: <span class="font-bold text-slate-700 dark:text-slate-200"><%= report.reporter?.name || 'Ẩn danh' %></span> 
+                            <span class="mx-2">•</span> 
+                            Ngày: <span class="font-mono"><%= new Date(report.createdAt).toLocaleString('vi-VN') %></span>
+                        </p>
+                        
+                        <% if(report.post) { %>
+                            <a href="http://localhost:3000/post/<%= report.post._id %>" target="_blank" 
+                               class="inline-flex items-center gap-1.5 bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-purple-100 dark:hover:bg-purple-900/60 transition border border-purple-200/60 dark:border-purple-800/60">
+                                <span>🔗 Xem tin đăng:</span>
+                                <span class="font-black"><%= report.post.title %></span>
+                            </a>
+                        <% } else { %>
+                            <span class="text-xs text-rose-500 dark:text-rose-400 font-semibold italic">Tin đăng liên quan đã bị gỡ trước đó.</span>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <div class="flex flex-row md:flex-col gap-2 w-full md:w-auto shrink-0">
+                    <form action="/admin/reports/ignore/<%= report._id %>" method="POST" class="flex-1 md:w-full">
+                        <button class="w-full px-5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition">
+                            Bỏ qua
+                        </button>
+                    </form>
+                    
+                    <% if(report.post) { %>
+                    <form action="/admin/posts/delete/<%= report.post._id %>" method="POST" onsubmit="return confirm('Xóa vĩnh viễn tin đăng vi phạm này?')" class="flex-1 md:w-full">
+                        <button class="w-full px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-500/20 transition">
+                            Xóa vi phạm
+                        </button>
+                    </form>
+                    <% } %>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    <% } %>
+
+</div>

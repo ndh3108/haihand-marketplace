@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý đơn hàng - HaiHand Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 flex min-h-screen font-sans">
+    
+    <%- include('partials/sidebar', {active: 'orders'}) %>
+
+    <div class="flex-1 p-10 h-screen overflow-y-auto ml-64">
+        
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-black tracking-tight text-slate-800">🛍️ Quản lý Đơn hàng</h2>
+            <div class="relative w-96">
+                <span class="absolute left-3 top-2.5 text-slate-400">🔍</span>
+                <input type="text" id="orderSearch" onkeyup="filterOrders()" placeholder="Tìm theo mã đơn hoặc tên khách..." 
+                       class="w-full px-4 py-2 pl-10 border border-slate-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-sm">
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left border-collapse" id="ordersTable">
+                <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-slate-400 text-[11px] font-black uppercase tracking-wider">
+                        <th class="px-6 py-4">Mã đơn</th>
+                        <th class="px-6 py-4">Khách hàng</th>
+                        <th class="px-6 py-4">Ngày đặt</th>
+                        <th class="px-6 py-4">Tổng tiền</th>
+                        <th class="px-6 py-4">Trạng thái</th>
+                        <th class="px-6 py-4 text-center">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-sm">
+                    <% if(orders && orders.length > 0) { %>
+                        <% orders.forEach(order => { %>
+                        <tr class="hover:bg-slate-50 transition-all order-row">
+                            <td class="px-6 py-4 font-mono font-bold text-blue-600">
+                                #<%= order._id.toString().slice(-6).toUpperCase() %>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-slate-800"><%= order.buyer?.name || 'N/A' %></div>
+                                <div class="text-[11px] text-slate-400"><%= order.phone || 'Không có SĐT' %></div>
+                            </td>
+                            <td class="px-6 py-4 text-slate-500">
+                                <%= new Date(order.createdAt).toLocaleDateString('vi-VN') %>
+                            </td>
+                            <td class="px-6 py-4 font-black text-slate-700">
+                                <%= (order.totalPrice || 0).toLocaleString('vi-VN') %> đ
+                            </td>
+                            <td class="px-6 py-4">
+                                <% if (order.status === 'Đã thanh toán cho người bán' || order.status === 'Đã hủy' || order.status === 'Hoàn thành') { %>
+                                    <span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase shadow-sm inline-block
+                                        <%= order.status.includes('thanh toán') || order.status === 'Hoàn thành' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' %>">
+                                        <%= order.status %> 🔒
+                                    </span>
+                                <% } else { %>
+                                    <form action="/orders/update-status/<%= order._id %>" method="POST">
+                                        <select name="status" onchange="this.form.submit()" 
+                                                class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase border-0 cursor-pointer shadow-sm transition-all bg-yellow-100 text-yellow-600">
+                                            <option value="Chờ xác nhận" <%= order.status === 'Chờ xác nhận' ? 'selected' : '' %>>Chờ xác nhận</option>
+                                            <option value="Đã thanh toán (Admin giữ tiền)" <%= order.status === 'Đã thanh toán (Admin giữ tiền)' ? 'selected' : '' %>>Đã thanh toán</option>
+                                            <option value="Người bán đã chuẩn bị hàng" <%= order.status === 'Người bán đã chuẩn bị hàng' ? 'selected' : '' %>>Người bán chuẩn bị xong</option>
+                                            <option value="Đang giao hàng" <%= order.status === 'Đang giao hàng' ? 'selected' : '' %>>Đang giao hàng</option>
+                                            <option value="Hoàn thành" <%= order.status === 'Hoàn thành' ? 'selected' : '' %>>Hoàn thành</option>
+                                            <option value="Đã hủy (Chờ hoàn tiền)" <%= order.status === 'Đã hủy (Chờ hoàn tiền)' ? 'selected' : '' %>>Chờ hoàn tiền</option>
+                                            <option value="Đã hủy" <%= order.status === 'Đã hủy' ? 'selected' : '' %>>Đã hủy</option>
+                                        </select>
+                                    </form>
+                                <% } %>
+                            </td>
+                            <td class="px-6 py-4 text-center flex justify-center items-center gap-2">
+                                <button type="button" 
+                                        onclick="openOrderDetails('<%= order._id %>', '<%= order.buyer?.name || `Ẩn danh` %>', '<%= order.phone %>', '<%= order.address %>', '<%= order.createdAt %>', '<%= order.updatedAt %>', '<%= order.totalPrice %>')" 
+                                        class="bg-indigo-50 text-indigo-600 px-4 py-1.5 rounded-lg text-xs font-black hover:bg-indigo-600 hover:text-white transition-all border border-indigo-100">
+                                    CHI TIẾT
+                                </button>
+
+                                <% if (order.status === 'Hoàn thành') { %>
+                                    <button onclick="releaseFunds('<%= order._id %>')" 
+                                            class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-black hover:bg-green-700 shadow-md transition-all">
+                                        GIẢI NGÂN
+                                    </button>
+                                <% } %>
+
+                                <% if (order.status === 'Đã hủy (Chờ hoàn tiền)') { %>
+                                    <button onclick="refundOrder('<%= order._id %>')" 
+                                            class="bg-orange-500 text-white px-3 py-1.5 rounded-lg text-xs font-black hover:bg-orange-600 shadow-md transition-all">
+                                        HOÀN TIỀN
+                                    </button>
+                                <% } %>
+                                
+                                <button onclick="deleteOrder('<%= order._id %>')" 
+                                        class="bg-red-50 text-red-500 px-3 py-1.5 rounded-lg text-xs font-black hover:bg-red-600 hover:text-white transition-all border border-red-100">
+                                    🗑️
+                                </button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" class="p-20 text-center text-slate-400 font-bold">Chưa có đơn hàng nào.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="adminOrderModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] flex justify-center items-center transition-all">
+        <div class="bg-white rounded-2xl shadow-2xl w-[500px] overflow-hidden transform scale-95 transition-transform" id="modalContent">
+            <div class="bg-slate-900 p-4 flex justify-between items-center text-white font-bold">
+                <h3>📋 Chi tiết đơn hàng</h3>
+                <button onclick="closeOrderDetails()" class="text-2xl">&times;</button>
+            </div>
+            <div class="p-6 space-y-3 text-sm">
+                <p><b>Mã đơn:</b> <span id="md-id"></span></p>
+                <p><b>Khách hàng:</b> <span id="md-name"></span></p>
+                <p><b>Số điện thoại:</b> <span id="md-phone"></span></p>
+                <p><b>Địa chỉ:</b> <span id="md-address"></span></p>
+                <p><b>Thời gian:</b> <span id="md-created"></span></p>
+                <hr>
+                <p class="text-right text-lg"><b>Tổng thu:</b> <span id="md-price" class="text-red-500 font-black"></span></p>
+            </div>
+            <div class="p-4 bg-slate-50 text-right">
+                <button onclick="closeOrderDetails()" class="bg-slate-800 text-white px-6 py-2 rounded-lg font-bold text-sm">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        function filterOrders() {
+            const input = document.getElementById("orderSearch").value.toLowerCase();
+            const rows = document.querySelectorAll(".order-row");
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
+            });
+        }
+
+        
+        async function deleteOrder(id) {
+            if(!confirm("⚠️ Hành động này sẽ xóa vĩnh viễn dữ liệu đơn hàng. Tiếp tục?")) return;
+            const res = await fetch(`/admin/orders/delete/${id}`, { method: 'POST' });
+            if(res.ok) {
+                alert("✅ Đã xóa đơn hàng!");
+                location.reload();
+            }
+        }
+
+        
+        async function releaseFunds(orderId) {
+            if(!confirm("💸 Xác nhận giải ngân 95% số tiền cho người bán?")) return;
+            try {
+                const res = await fetch(`/api/admin/release-funds/${orderId}`, { method: 'POST' });
+                const data = await res.json();
+                alert(data.message);
+                if(res.ok) location.reload();
+            } catch (e) {
+                alert("❌ Lỗi hệ thống giải ngân!");
+            }
+        }
+
+        
+        async function refundOrder(orderId) {
+            if(!confirm("💸 Xác nhận hoàn trả lại tiền vào ví HaiPay cho khách hàng?")) return;
+            try {
+                const res = await fetch(`/api/admin/refund-order/${orderId}`, { method: 'POST' });
+                const data = await res.json();
+                alert(data.message);
+                if(res.ok) location.reload();
+            } catch (e) {
+                alert("❌ Lỗi hệ thống hoàn tiền!");
+            }
+        }
+
+        
+        function openOrderDetails(id, name, phone, address, created, updated, price) {
+            document.getElementById('md-id').textContent = '#' + id.slice(-6).toUpperCase();
+            document.getElementById('md-name').textContent = name;
+            document.getElementById('md-phone').textContent = phone;
+            document.getElementById('md-address').textContent = address;
+            document.getElementById('md-created').textContent = new Date(created).toLocaleString('vi-VN');
+            document.getElementById('md-price').textContent = Number(price).toLocaleString('vi-VN') + ' đ';
+            document.getElementById('adminOrderModal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('modalContent').classList.remove('scale-95'), 10);
+        }
+
+        function closeOrderDetails() {
+            document.getElementById('modalContent').classList.add('scale-95');
+            setTimeout(() => document.getElementById('adminOrderModal').classList.add('hidden'), 150);
+        }
+    </script>
+</body>
+</html>
